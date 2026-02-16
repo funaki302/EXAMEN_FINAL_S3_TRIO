@@ -1,0 +1,3 @@
+Objectifs
+Dans une page tableau de bord, on doit voir la liste des villes avec les besoins, et les dons attribués à
+chaque ville.

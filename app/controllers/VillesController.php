@@ -9,6 +9,45 @@ class VillesController {
     public function __construct() {
         $this->villesModel = new Villes();
     }
+
+    public function index() {
+        try {
+            $villes = $this->villesModel->getAll();
+            Flight::json([
+                'success' => true,
+                'data' => $villes,
+                'count' => count($villes)
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des villes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id_ville) {
+        try {
+            $ville = $this->villesModel->getById($id_ville);
+            if (!$ville) {
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Ville non trouvée'
+                ], 404);
+                return;
+            }
+
+            Flight::json([
+                'success' => true,
+                'data' => $ville
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération de la ville: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     
     public function getAll() {
         $villes = $this->villesModel->getAll();
@@ -31,7 +70,7 @@ class VillesController {
                 'region' => $region,
                 'count' => count($villes)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des villes de la région: ' . $e->getMessage()
@@ -66,7 +105,7 @@ class VillesController {
                     'region' => $region
                 ]
             ], 201);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la création de la ville: ' . $e->getMessage()
@@ -111,7 +150,7 @@ class VillesController {
                     'region' => $region
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la mise à jour de la ville: ' . $e->getMessage()
@@ -137,7 +176,7 @@ class VillesController {
                 'success' => true,
                 'message' => 'Ville supprimée avec succès'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la suppression de la ville: ' . $e->getMessage()
@@ -167,7 +206,7 @@ class VillesController {
                     'regions' => $statsParRegion
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des statistiques: ' . $e->getMessage()
@@ -183,10 +222,26 @@ class VillesController {
                 'data' => $regions,
                 'count' => count($regions)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des régions: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function objectifsDashboard() {
+        try {
+            $data = $this->villesModel->getObjectifsDashboard();
+            Flight::json([
+                'success' => true,
+                'data' => $data,
+                'count' => count($data)
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des objectifs du dashboard: ' . $e->getMessage()
             ], 500);
         }
     }

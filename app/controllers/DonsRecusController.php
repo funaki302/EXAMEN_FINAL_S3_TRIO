@@ -13,6 +13,45 @@ class DonsRecusController {
         $this->donsModel = new DonsRecus();
         $this->articlesModel = new Articles();
     }
+
+    public function index() {
+        try {
+            $dons = $this->donsModel->getAll();
+            Flight::json([
+                'success' => true,
+                'data' => $dons,
+                'count' => count($dons)
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des dons: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id_don) {
+        try {
+            $don = $this->donsModel->getById($id_don);
+            if (!$don) {
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Don non trouvé'
+                ], 404);
+                return;
+            }
+
+            Flight::json([
+                'success' => true,
+                'data' => $don
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération du don: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     
     public function getAll() {
         return $this->donsModel->getAll();
@@ -39,7 +78,7 @@ class DonsRecusController {
                 'id_article' => $id_article,
                 'count' => count($dons)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des dons par article: ' . $e->getMessage()
@@ -56,7 +95,7 @@ class DonsRecusController {
                 'date' => $date,
                 'count' => count($dons)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des dons par date: ' . $e->getMessage()
@@ -119,7 +158,7 @@ class DonsRecusController {
                     'date_reception' => $date_reception
                 ]
             ], 201);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la création du don: ' . $e->getMessage()
@@ -185,7 +224,7 @@ class DonsRecusController {
                     'date_reception' => $date_reception
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la mise à jour du don: ' . $e->getMessage()
@@ -209,7 +248,7 @@ class DonsRecusController {
                 'success' => true,
                 'message' => 'Don supprimé avec succès'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la suppression du don: ' . $e->getMessage()
@@ -225,7 +264,7 @@ class DonsRecusController {
                 'data' => $stats,
                 'count' => count($stats)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des statistiques par article: ' . $e->getMessage()
@@ -241,7 +280,7 @@ class DonsRecusController {
                 'data' => $stats,
                 'count' => count($stats)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des statistiques par catégorie: ' . $e->getMessage()
@@ -281,7 +320,7 @@ class DonsRecusController {
                 'date_fin' => $date_fin,
                 'count' => count($dons)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des dons par période: ' . $e->getMessage()
@@ -298,7 +337,7 @@ class DonsRecusController {
                     'valeur_totale' => $valeur
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors du calcul de la valeur totale: ' . $e->getMessage()

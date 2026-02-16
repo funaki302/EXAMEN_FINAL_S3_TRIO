@@ -10,6 +10,45 @@ class ArticlesController {
     public function __construct() {
         $this->articlesModel = new Articles();
     }
+
+    public function index() {
+        try {
+            $articles = $this->articlesModel->getAll();
+            Flight::json([
+                'success' => true,
+                'data' => $articles,
+                'count' => count($articles)
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des articles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id_article) {
+        try {
+            $article = $this->articlesModel->getById($id_article);
+            if (!$article) {
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Article non trouvé'
+                ], 404);
+                return;
+            }
+
+            Flight::json([
+                'success' => true,
+                'data' => $article
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération de l\'article: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     
     public function getAll() {
         $articles = $this->articlesModel->getAll();
@@ -63,7 +102,7 @@ class ArticlesController {
                     'prix_unitaire' => $prix_unitaire
                 ]
             ], 201);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la création de l\'article: ' . $e->getMessage()
@@ -115,7 +154,7 @@ class ArticlesController {
                     'prix_unitaire' => $prix_unitaire
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la mise à jour de l\'article: ' . $e->getMessage()
@@ -139,7 +178,7 @@ class ArticlesController {
                 'success' => true,
                 'message' => 'Article supprimé avec succès'
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la suppression de l\'article: ' . $e->getMessage()
@@ -155,7 +194,7 @@ class ArticlesController {
                 'data' => $categories,
                 'count' => count($categories)
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des catégories: ' . $e->getMessage()

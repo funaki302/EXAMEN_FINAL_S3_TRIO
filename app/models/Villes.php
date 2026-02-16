@@ -84,4 +84,56 @@ class Villes {
         $sql = "SELECT DISTINCT region FROM BNGRC_villes ORDER BY region ASC";
         return $this->db->fetchAll($sql);
     }
+
+    public function getObjectifsDashboard() {
+        $villesSql = "SELECT id_ville, nom_ville, region FROM BNGRC_villes ORDER BY nom_ville ASC";
+        $villes = $this->db->fetchAll($villesSql);
+
+        $besoinsSql = "SELECT id_ville, id_article, nom_article, categorie, quantite_demandee_totale
+                      FROM BNGRC_V_Besoins_Par_Ville";
+        $besoins = $this->db->fetchAll($besoinsSql);
+
+        $attribSql = "SELECT id_ville, id_article, nom_article, categorie, quantite_attribuee_totale
+                     FROM BNGRC_V_Distributions_Par_Ville";
+        $attribues = $this->db->fetchAll($attribSql);
+
+        $map = [];
+        foreach ($villes as $v) {
+            $map[$v['id_ville']] = [
+                'id_ville' => $v['id_ville'],
+                'nom_ville' => $v['nom_ville'],
+                'region' => $v['region'],
+                'besoins' => [],
+                'attribues' => []
+            ];
+        }
+
+        foreach ($besoins as $b) {
+            $idVille = $b['id_ville'];
+            if (!isset($map[$idVille])) {
+                continue;
+            }
+            $map[$idVille]['besoins'][] = [
+                'id_article' => $b['id_article'],
+                'nom_article' => $b['nom_article'],
+                'categorie' => $b['categorie'],
+                'quantite' => $b['quantite_demandee_totale']
+            ];
+        }
+
+        foreach ($attribues as $a) {
+            $idVille = $a['id_ville'];
+            if (!isset($map[$idVille])) {
+                continue;
+            }
+            $map[$idVille]['attribues'][] = [
+                'id_article' => $a['id_article'],
+                'nom_article' => $a['nom_article'],
+                'categorie' => $a['categorie'],
+                'quantite' => $a['quantite_attribuee_totale']
+            ];
+        }
+
+        return array_values($map);
+    }
 }
