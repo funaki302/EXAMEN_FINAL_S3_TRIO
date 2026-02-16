@@ -27,10 +27,10 @@
         </div>
       </div>
 
-      <script nonce="<?= $nonce ?>">
+      <script>
         window.BASE_URL = '<?= BASE_URL ?>';
       </script>
-      <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/traitement-js/dispatch.js"></script>
+      <script src="<?= BASE_URL ?>/traitement-js/dispatch.js"></script>
 
     </div>
 

@@ -42,8 +42,8 @@
   <script>
     const BASE_URL = '<?= BASE_URL ?>';
   </script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/methodes/met_dons.js"></script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/traitement-js/dons.js"></script>
+  <script src="<?= BASE_URL ?>/assets/js/methodes/met_dons.js"></script>
+  <script src="<?= BASE_URL ?>/traitement-js/dons.js"></script>
 
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
