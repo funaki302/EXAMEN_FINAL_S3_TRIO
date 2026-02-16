@@ -42,7 +42,7 @@
   <script>
     const BASE_URL = '<?= BASE_URL ?>';
   </script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/met_dons.js"></script>
+  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/methodes/met_dons.js"></script>
   <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/traitement-js/dons.js"></script>
 
 

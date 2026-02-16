@@ -40,11 +40,11 @@
   <script>
     const BASE_URL = '<?= BASE_URL ?>';
   </script>
-    <script src="<?= BASE_URL ?>/assets/js/coralie/met_villes.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/coralie/met_articles.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/coralie/met_besoins.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/coralie/met_dons.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/coralie/besoins.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/methodes/met_villes.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/methodes/met_articles.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/methodes/met_besoins.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/methodes/met_dons.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/methodes/besoins.js"></script>
 
   </div>
   <!-- End main-content -->
