@@ -29,6 +29,16 @@
   </title>
   <!-- CSS Files -->
   <link id="pagestyle" href="<?= BASE_URL ?>/assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <style nonce="<?= $nonce ?>">
+    .bngrc-navbar-transparent{
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+  </style>
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script nonce="<?= $nonce ?>" defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
@@ -127,7 +137,7 @@
         <li class="nav-item">
           <a class="nav-link<?= ($active_page === 'dons' ? ' active' : '') ?>" href="<?= BASE_URL ?>/dons">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <img src="<?= BASE_URL ?>/assets/icons/don.svg" width="18" height="18" alt="Dispatch"> 
+            <img src="<?= BASE_URL ?>/assets/icons/don.svg" width="18" height="18" alt="Dons"> 
           </div>
           <span class="nav-link-text ms-1">Dons</span>
           </a>
@@ -173,7 +183,7 @@
   <div class="main-content position-relative max-height-vh-100 h-100">
     <br>
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg blur blur-rounded shadow-blur bg-white position-absolute px-4 w-100 z-index-2">
+    <nav class="navbar navbar-main navbar-expand-lg bg-transparent position-absolute px-4 w-100 z-index-2 bngrc-navbar-transparent">
       <div class="container-fluid py-1">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 ps-2 me-sm-6 me-5">

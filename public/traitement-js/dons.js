@@ -1,12 +1,41 @@
 window.addEventListener('load', async function () {
     try {
       const listeDons = await getDonsRestants();
+      renderDonsStats(listeDons);
       loadListeDons(listeDons);
     } catch (e) {
       console.error('Erreur:', e);
       this.alert('Erreur chargement de la page :'+ (e && e.message ? e.message : String(e)));
     }
 });
+
+function renderDonsStats(listeDons){
+    const totalRecuEl = document.querySelector('#dons-total-recu');
+    const totalAttribueEl = document.querySelector('#dons-total-attribue');
+    const totalNonAttribueEl = document.querySelector('#dons-total-non-attribue');
+    if (!totalRecuEl || !totalAttribueEl || !totalNonAttribueEl) {
+        return;
+    }
+
+    let totalRecu = 0;
+    let totalAttribue = 0;
+    let totalNonAttribue = 0;
+
+    (listeDons || []).forEach(don => {
+        const donnee = Number(don.quantite_donnee_totale) || 0;
+        const attribuee = Number(don.quantite_attribuee_totale) || 0;
+        const restante = Number(don.quantite_restante) || 0;
+        totalRecu += donnee;
+        totalAttribue += attribuee;
+        totalNonAttribue += restante;
+    });
+
+    const nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 });
+    totalRecuEl.textContent = nf.format(totalRecu);
+    totalAttribueEl.textContent = nf.format(totalAttribue);
+    totalNonAttribueEl.textContent = nf.format(totalNonAttribue);
+}
+
 function loadListeDons(listeDons){
     const tbody = document.querySelector('#dons-table-body');
     tbody.innerHTML = '';

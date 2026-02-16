@@ -2,6 +2,56 @@
 <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container-fluid py-4">
+      <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center">
+                <div class="icon icon-shape icon-md bg-gradient-primary shadow text-center border-radius-md d-flex align-items-center justify-content-center me-3">
+                  <img src="<?= BASE_URL ?>/assets/icons/graph-down-arrow.svg" width="22" height="22" alt="Total reçu" style="filter: brightness(0) invert(1);" />
+                </div>
+                <div class="w-100">
+                  <p class="text-sm text-uppercase font-weight-bold mb-1">Total dons reçus</p>
+                  <h4 class="font-weight-bolder mb-0" id="dons-total-recu">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center">
+                <div class="icon icon-shape icon-md bg-gradient-success shadow text-center border-radius-md d-flex align-items-center justify-content-center me-3">
+                  <img src="<?= BASE_URL ?>/assets/icons/graph-up-arrow.svg" width="22" height="22" alt="Total attribué" style="filter: brightness(0) invert(1);" />
+                </div>
+                <div class="w-100">
+                  <p class="text-sm text-uppercase font-weight-bold mb-1">Total dons attribués</p>
+                  <h4 class="font-weight-bolder mb-0" id="dons-total-attribue">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 mb-3">
+          <div class="card h-100">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center">
+                <div class="icon icon-shape icon-md bg-gradient-dark shadow text-center border-radius-md d-flex align-items-center justify-content-center me-3">
+                  <img src="<?= BASE_URL ?>/assets/icons/hourglass-split.svg" width="22" height="22" alt="Non attribué" style="filter: brightness(0) invert(1);" />
+                </div>
+                <div class="w-100">
+                  <p class="text-sm text-uppercase font-weight-bold mb-1">Dons non attribués</p>
+                  <h4 class="font-weight-bolder mb-0" id="dons-total-non-attribue">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
