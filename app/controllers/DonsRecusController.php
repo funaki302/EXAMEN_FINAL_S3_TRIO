@@ -66,7 +66,12 @@ class DonsRecusController {
     
     public function create() {
         try {
-            $data = Flight::request()->data;
+            $body = Flight::request()->getBody();
+            $data = json_decode($body, true);
+
+            if (!$data) {
+                $data = Flight::request()->data->getData();
+            }
             
             if (empty($data['id_article']) || empty($data['quantite_donnee']) || empty($data['date_reception'])) {
                 Flight::json([

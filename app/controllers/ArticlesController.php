@@ -12,7 +12,11 @@ class ArticlesController {
     }
     
     public function getAll() {
-        return $this->articlesModel->getAll();
+        $articles = $this->articlesModel->getAll();
+        Flight::json([
+            'success' => true,
+            'data' => $articles
+        ]);
     }
     
     public function getById($id_article) {

@@ -56,7 +56,12 @@ class BesoinsVillesController {
     
     public function create() {
         try {
-            $data = Flight::request()->data;
+            $body = Flight::request()->getBody();
+            $data = json_decode($body, true);
+
+            if (!$data) {
+                $data = Flight::request()->data->getData();
+            }
             
             if (empty($data['id_ville']) || empty($data['id_article']) || empty($data['quantite_demandee'])) {
                 Flight::json([

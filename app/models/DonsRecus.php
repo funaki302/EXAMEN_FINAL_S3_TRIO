@@ -63,7 +63,7 @@ class DonsRecus {
      */
     public function create($id_article, $quantite_donnee, $date_reception) {
         $sql = "INSERT INTO BNGRC_dons_recus (id_article, quantite_donnee, date_reception) VALUES (:id_article, :quantite_donnee, :date_reception)";
-        $this->db->execute($sql, [
+        $this->db->runQuery($sql, [
             'id_article' => $id_article,
             'quantite_donnee' => $quantite_donnee,
             'date_reception' => $date_reception
@@ -76,7 +76,7 @@ class DonsRecus {
      */
     public function update($id_don, $id_article, $quantite_donnee, $date_reception) {
         $sql = "UPDATE BNGRC_dons_recus SET id_article = :id_article, quantite_donnee = :quantite_donnee, date_reception = :date_reception WHERE id_don = :id_don";
-        return $this->db->execute($sql, [
+        return $this->db->runQuery($sql, [
             'id_don' => $id_don,
             'id_article' => $id_article,
             'quantite_donnee' => $quantite_donnee,
@@ -89,7 +89,7 @@ class DonsRecus {
      */
     public function delete($id_don) {
         $sql = "DELETE FROM BNGRC_dons_recus WHERE id_don = :id_don";
-        return $this->db->execute($sql, ['id_don' => $id_don]);
+        return $this->db->runQuery($sql, ['id_don' => $id_don]);
     }
     
     /**

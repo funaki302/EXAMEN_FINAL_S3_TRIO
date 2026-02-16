@@ -41,7 +41,7 @@ class Villes {
      */
     public function create($nom_ville, $region) {
         $sql = "INSERT INTO BNGRC_villes (nom_ville, region) VALUES (:nom_ville, :region)";
-        $this->db->execute($sql, [
+        $this->db->runQuery($sql, [
             'nom_ville' => $nom_ville,
             'region' => $region
         ]);
@@ -53,7 +53,7 @@ class Villes {
      */
     public function update($id_ville, $nom_ville, $region) {
         $sql = "UPDATE BNGRC_villes SET nom_ville = :nom_ville, region = :region WHERE id_ville = :id_ville";
-        return $this->db->execute($sql, [
+        return $this->db->runQuery($sql, [
             'id_ville' => $id_ville,
             'nom_ville' => $nom_ville,
             'region' => $region
@@ -65,7 +65,7 @@ class Villes {
      */
     public function delete($id_ville) {
         $sql = "DELETE FROM BNGRC_villes WHERE id_ville = :id_ville";
-        return $this->db->execute($sql, ['id_ville' => $id_ville]);
+        return $this->db->runQuery($sql, ['id_ville' => $id_ville]);
     }
     
     /**
