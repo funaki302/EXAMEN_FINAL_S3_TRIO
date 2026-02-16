@@ -52,6 +52,22 @@ $router->group('', function(Router $router) use ($app) {
 		$app->render('besoins', ['nonce' => $app->get('csp_nonce')]);
 	});
 
+	$router->get('/billing', function() use ($app) {
+		$app->render('billing', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/profile', function() use ($app) {
+		$app->render('profile', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/sign-in', function() use ($app) {
+		$app->render('sign-in', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/sign-up', function() use ($app) {
+		$app->render('sign-up', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/tables', function() use ($app) {
+		$app->render('tables', ['nonce' => $app->get('csp_nonce')]);
+	});
+
 
 	// Routes pour les villes
 	$router->get('/api/getAll/villes', [$villesController, 'getAll']);

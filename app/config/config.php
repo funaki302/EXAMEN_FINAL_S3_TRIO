@@ -58,6 +58,9 @@ $app->set('flight.content_length', false);    // Send content length header. Usu
 $nonce = bin2hex(random_bytes(16));
 $app->set('csp_nonce', $nonce);
 
+// BASE URL
+define('BASE_URL', '');
+
 /**********************************************
  *           User Configuration               *
  **********************************************/
