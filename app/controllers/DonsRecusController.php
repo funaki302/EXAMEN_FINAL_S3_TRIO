@@ -13,45 +13,6 @@ class DonsRecusController {
         $this->donsModel = new DonsRecus();
         $this->articlesModel = new Articles();
     }
-
-    public function index() {
-        try {
-            $dons = $this->donsModel->getAll();
-            Flight::json([
-                'success' => true,
-                'data' => $dons,
-                'count' => count($dons)
-            ]);
-        } catch (\Exception $e) {
-            Flight::json([
-                'success' => false,
-                'message' => 'Erreur lors de la récupération des dons: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function show($id_don) {
-        try {
-            $don = $this->donsModel->getById($id_don);
-            if (!$don) {
-                Flight::json([
-                    'success' => false,
-                    'message' => 'Don non trouvé'
-                ], 404);
-                return;
-            }
-
-            Flight::json([
-                'success' => true,
-                'data' => $don
-            ]);
-        } catch (\Exception $e) {
-            Flight::json([
-                'success' => false,
-                'message' => 'Erreur lors de la récupération du don: ' . $e->getMessage()
-            ], 500);
-        }
-    }
     
     public function getAll() {
         return $this->donsModel->getAll();

@@ -52,6 +52,9 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/form', function() use ($app) {
 		$app->render('besoins', ['nonce' => $app->get('csp_nonce')]);
 	});
+	$router->get('/dons', function() use ($app) {
+		$app->render('dons', ['nonce' => $app->get('csp_nonce')]);
+	});
 
 	$router->get('/billing', function() use ($app) {
 		$app->render('billing', ['nonce' => $app->get('csp_nonce')]);
@@ -108,7 +111,11 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/besoins-villes/stats/articles', [$besoinsVillesController, 'statsByArticle']);
 
 	// Routes pour les dons reçus
-	$router->get('/dons-recus', [$donsRecusController, 'index']);
+	$router->get('/api/getAll/dons-recus', function() use ($app) {
+		$donsRecusController = new DonsRecusController();
+		$dons = $donsRecusController->getAll();
+		$app->json($dons);
+	});
 	$router->get('/dons-recus/@id', [$donsRecusController, 'show']);
 	$router->get('/dons-recus/article/@id_article', [$donsRecusController, 'getByArticle']);
 	$router->get('/dons-recus/date/@date', [$donsRecusController, 'getByDate']);

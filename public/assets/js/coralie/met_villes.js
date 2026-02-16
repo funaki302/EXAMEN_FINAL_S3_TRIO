@@ -1,5 +1,5 @@
 async function getAllVilles() {
-    const villes = await fetch('/api/getAll/villes');
+    const villes = await fetch(BASE_URL+'/api/getAll/villes');
     if (!villes.ok) {
         throw new Error("Error lors de getAllVilles");
     }

@@ -1,6 +1,6 @@
 async function createDon(data) {
     try {
-        const response = await fetch('/api/create/dons', {
+        const response = await fetch(BASE_URL+'/api/create/dons', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -18,4 +18,14 @@ async function createDon(data) {
         console.error('Erreur:', error);
         throw error;
     }
+}
+
+async function getAllDons() {
+    const dons = await fetch(BASE_URL+'/api/getAll/dons-recus');
+    if (!dons.ok) {
+        throw new Error("Error lors de getAllDons");
+    }
+
+    const data = await dons.json();
+    return data;
 }

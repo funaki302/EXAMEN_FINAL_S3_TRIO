@@ -37,11 +37,14 @@
       </div>
     </div>
     <!-- Page-specific scripts -->
-    <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/met_villes.js"></script>
-    <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/met_articles.js"></script>
-    <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/met_besoins.js"></script>
-    <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/met_dons.js"></script>
-    <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/coralie/besoins.js"></script>
+  <script>
+    const BASE_URL = '<?= BASE_URL ?>';
+  </script>
+    <script src="<?= BASE_URL ?>/assets/js/coralie/met_villes.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/coralie/met_articles.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/coralie/met_besoins.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/coralie/met_dons.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/coralie/besoins.js"></script>
 
   </div>
   <!-- End main-content -->

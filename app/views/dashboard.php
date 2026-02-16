@@ -573,6 +573,6 @@
       },
     });
   </script>
-  <script src="/traitement-js/.js"></script>
+  <script src="/traitement-js/dashboard.js"></script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

@@ -1,6 +1,6 @@
 async function createBesoin(data) {
     try {
-        const response = await fetch('/api/create/besoins', {
+        const response = await fetch(BASE_URL+'/api/create/besoins', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 async function getAllArticles() {
-    const articles = await fetch('/api/getAll/articles');
+    const articles = await fetch(BASE_URL+'/api/getAll/articles');
     if (!articles.ok) {
         throw new Error("Error lors de getAllArticles");
     }
