@@ -1,0 +1,1 @@
+sudo php -S localhost:4250 -t public
