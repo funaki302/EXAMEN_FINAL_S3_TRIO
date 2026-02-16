@@ -59,7 +59,10 @@ $router->group('', function(Router $router) use ($app) {
 		]);
 	});
 	$router->get('/dons', function() use ($app) {
-		$app->render('dons', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('dons', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'dons',
+		]);
 	});
 
 	$router->get('/billing', function() use ($app) {
