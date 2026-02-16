@@ -42,7 +42,7 @@
   <script>
     const BASE_URL = '<?= BASE_URL ?>';
   </script>
-  <script src="<?= BASE_URL ?>/assets/js/methodes/met_dons.js"></script>
+  <script src="<?= BASE_URL ?>/traitement-js/methodes/met_dons.js"></script>
   <script src="<?= BASE_URL ?>/traitement-js/dons.js"></script>
 
 
