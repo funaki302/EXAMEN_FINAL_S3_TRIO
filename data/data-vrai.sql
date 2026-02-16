@@ -39,7 +39,7 @@ CREATE TABLE BNGRC_dons_recus (
 ) ENGINE=InnoDB;
 
 -- 5. Table de Dispatch (Pour le tableau de bord et le suivi )
-CREATE TABLE distributions (
+CREATE TABLE BNGRC_distributions (
     id_distribution INT AUTO_INCREMENT PRIMARY KEY,
     id_don INT NOT NULL,
     id_ville INT NOT NULL,
