@@ -9,6 +9,14 @@ window.addEventListener('load', async function () {
       
       loadFormBesoin(villes, articles);
       loadFormDon(articles);
+      showForm('besoin');
+
+      document.querySelector('#btn-form-besoin').addEventListener('click', function() {
+          showForm('besoin');
+      });
+      document.querySelector('#btn-form-don').addEventListener('click', function() {
+          showForm('don');
+      });
     } catch (e) {
       console.error('Erreur:', e);
       this.alert('Erreur chargement de la page :'+ (e && e.message ? e.message : String(e)));
@@ -262,4 +270,23 @@ function loadFormDon(articles){
 
     div.innerHTML = '';
     div.appendChild(form);
+}
+
+function showForm(type) {
+    const formBesoin = document.querySelector('#form-besoin');
+    const formDon = document.querySelector('#form-don');
+    const btnBesoin = document.querySelector('#btn-form-besoin');
+    const btnDon = document.querySelector('#btn-form-don');
+
+    if (type === 'besoin') {
+        formBesoin.style.display = 'block';
+        formDon.style.display = 'none';
+        btnBesoin.className = 'btn btn-primary w-100 mb-0';
+        btnDon.className = 'btn btn-outline-success w-100 mb-0';
+    } else {
+        formBesoin.style.display = 'none';
+        formDon.style.display = 'block';
+        btnBesoin.className = 'btn btn-outline-primary w-100 mb-0';
+        btnDon.className = 'btn btn-success w-100 mb-0';
+    }
 }

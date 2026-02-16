@@ -365,13 +365,27 @@
       <div class="row">
         <div class="col-12">
           <br><br><br>
+          <div class="card card-body p-3 mb-4">
+            <div class="row">
+              <div class="col-md-6 mb-2 mb-md-0">
+                <button id="btn-form-besoin" class="btn btn-primary w-100 mb-0">
+                  <i class="fas fa-clipboard-list me-2"></i>Formulaire Besoin
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button id="btn-form-don" class="btn btn-outline-success w-100 mb-0">
+                  <i class="fas fa-hand-holding-heart me-2"></i>Formulaire Don
+                </button>
+              </div>
+            </div>
+          </div>
           <div id="form-besoin">
             <!-- Le formulaire sera injecté ici par besoins.js -->
             <div class="card card-body p-4">
               <h4 class="mb-0">Chargement du formulaire...</h4>
             </div>
           </div>
-          <div class="mt-4" id="form-don">
+          <div class="mt-4" id="form-don" style="display: none;">
             <!-- Le formulaire de don sera injecté ici par besoins.js -->
             <div class="card card-body p-4">
               <h4 class="mb-0">Chargement du formulaire de don...</h4>
