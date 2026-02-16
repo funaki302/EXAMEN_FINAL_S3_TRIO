@@ -16,6 +16,45 @@ class BesoinsVillesController {
         $this->villesModel = new Villes();
         $this->articlesModel = new Articles();
     }
+
+    public function index() {
+        try {
+            $besoins = $this->besoinsModel->getAll();
+            Flight::json([
+                'success' => true,
+                'data' => $besoins,
+                'count' => count($besoins)
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des besoins: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id_besoin) {
+        try {
+            $besoin = $this->besoinsModel->getById($id_besoin);
+            if (!$besoin) {
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Besoin non trouvé'
+                ], 404);
+                return;
+            }
+
+            Flight::json([
+                'success' => true,
+                'data' => $besoin
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération du besoin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     
     public function getAll() {
         return $this->besoinsModel->getAll();

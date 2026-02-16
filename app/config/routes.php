@@ -49,14 +49,16 @@ $router->group('', function(Router $router) use ($app) {
 	});
 
 	// Routes pour les villes
+	// IMPORTANT: Les routes spécifiques DOIVENT être avant les routes avec paramètres (@id)
 	$router->get('/villes', [$villesController, 'index']);
-	$router->get('/villes/@id', [$villesController, 'show']);
+	$router->get('/villes/stats', [$villesController, 'stats']);
+	$router->get('/villes/regions', [$villesController, 'regions']);
+	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
 	$router->get('/villes/region/@region', [$villesController, 'getByRegion']);
+	$router->get('/villes/@id', [$villesController, 'show']);
 	$router->post('/villes', [$villesController, 'create']);
 	$router->put('/villes/@id', [$villesController, 'update']);
 	$router->delete('/villes/@id', [$villesController, 'delete']);
-	$router->get('/villes/stats', [$villesController, 'stats']);
-	$router->get('/villes/regions', [$villesController, 'regions']);
 
 	// Routes pour les articles
 	$router->get('/articles', [$articlesController, 'index']);
