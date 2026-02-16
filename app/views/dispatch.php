@@ -2,6 +2,7 @@
 <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container-fluid py-4">
+      <div class="row" id="dispatch-restants-cards"></div>
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
@@ -9,6 +10,7 @@
               <div class="d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">Simulation du Dispatch</h6>
                 <div class="d-flex gap-2">
+                  <button id="btn-dispatch-refresh" class="btn btn-secondary btn-sm mb-0">Actualiser</button>
                   <button id="btn-dispatch-run" class="btn btn-primary btn-sm mb-0">Simuler le Dispatch</button>
                   <button id="btn-dispatch-validate" class="btn btn-success btn-sm mb-0">Valider le Dispatch</button>
                 </div>

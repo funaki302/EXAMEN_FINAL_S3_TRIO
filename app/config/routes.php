@@ -133,6 +133,7 @@ $router->group('', function(Router $router) use ($app) {
 	$router->post('/dispatch/run', [$dispatchController, 'run']);
 	$router->post('/dispatch/validate', [$dispatchController, 'validate']);
 	$router->get('/dispatch/summary', [$dispatchController, 'summary']);
+	$router->get('/dispatch/dons-restants', [$dispatchController, 'donsRestants']);
 
 	// Achats
 	$router->get('/achats/solde', [$achatsController, 'solde']);

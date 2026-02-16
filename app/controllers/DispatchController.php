@@ -15,7 +15,8 @@ class DispatchController {
         try {
             $now = date('Y-m-d H:i:s');
 
-            $result = $this->dispatchModel->runDispatch($now, false);
+            $sim = $this->dispatchModel->getSimulatedSummaryRows($now);
+            $result = $sim['dispatch'] ?? [];
 
             Flight::json([
                 'success' => true,
@@ -24,6 +25,8 @@ class DispatchController {
                     'distributions_creees' => $result['distributions_creees'] ?? 0,
                     'quantite_attribuee_totale' => $result['quantite_attribuee_totale'] ?? 0,
                     'date_execution' => $now,
+                    'summary_rows' => $sim['summary_rows'] ?? [],
+                    'summary_count' => $sim['count'] ?? 0,
                 ],
             ]);
         } catch (\Exception $e) {
@@ -70,6 +73,23 @@ class DispatchController {
             Flight::json([
                 'success' => false,
                 'message' => 'Erreur lors du résumé dispatch: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function donsRestants() {
+        try {
+            $rows = $this->dispatchModel->getDonsRestantsParArticle();
+
+            Flight::json([
+                'success' => true,
+                'data' => $rows,
+                'count' => count($rows),
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors du chargement des dons restants: ' . $e->getMessage(),
             ], 500);
         }
     }
