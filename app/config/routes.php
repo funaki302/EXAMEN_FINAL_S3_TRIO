@@ -41,6 +41,7 @@ $router->group('', function(Router $router) use ($app) {
 		$distributionsModel = new \app\models\Distributions();
 
 		$app->render('dashboard', [
+			'nonce' => $app->get('csp_nonce'),
 			'nbVilles' => $villesModel->count(),
 			'nbDons' => $donsRecusModel->count(),
 			'nbDistributions' => $distributionsModel->count(),
