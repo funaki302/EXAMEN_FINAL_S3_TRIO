@@ -65,7 +65,7 @@ class BesoinsVilles {
      */
     public function create($id_ville, $id_article, $quantite_demandee) {
         $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee) VALUES (:id_ville, :id_article, :quantite_demandee)";
-        $this->db->execute($sql, [
+        $this->db->runQuery($sql, [
             'id_ville' => $id_ville,
             'id_article' => $id_article,
             'quantite_demandee' => $quantite_demandee
@@ -78,7 +78,7 @@ class BesoinsVilles {
      */
     public function update($id_besoin, $id_ville, $id_article, $quantite_demandee) {
         $sql = "UPDATE BNGRC_besoins_villes SET id_ville = :id_ville, id_article = :id_article, quantite_demandee = :quantite_demandee WHERE id_besoin = :id_besoin";
-        return $this->db->execute($sql, [
+        return $this->db->runQuery($sql, [
             'id_besoin' => $id_besoin,
             'id_ville' => $id_ville,
             'id_article' => $id_article,
@@ -91,7 +91,7 @@ class BesoinsVilles {
      */
     public function delete($id_besoin) {
         $sql = "DELETE FROM BNGRC_besoins_villes WHERE id_besoin = :id_besoin";
-        return $this->db->execute($sql, ['id_besoin' => $id_besoin]);
+        return $this->db->runQuery($sql, ['id_besoin' => $id_besoin]);
     }
     
     /**

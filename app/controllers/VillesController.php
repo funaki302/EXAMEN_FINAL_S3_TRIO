@@ -50,7 +50,11 @@ class VillesController {
     }
     
     public function getAll() {
-        return $this->villesModel->getAll();
+        $villes = $this->villesModel->getAll();
+        Flight::json([
+            'success' => true,
+            'data' => $villes
+        ]);
     }
     
     public function getById($id_ville) {

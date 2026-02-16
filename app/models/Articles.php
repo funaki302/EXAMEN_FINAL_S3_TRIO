@@ -41,7 +41,7 @@ class Articles {
      */
     public function create($nom_article, $categorie, $prix_unitaire = 0) {
         $sql = "INSERT INTO BNGRC_articles (nom_article, categorie, prix_unitaire) VALUES (:nom_article, :categorie, :prix_unitaire)";
-        $this->db->execute($sql, [
+        $this->db->runQuery($sql, [
             'nom_article' => $nom_article,
             'categorie' => $categorie,
             'prix_unitaire' => $prix_unitaire
@@ -54,7 +54,7 @@ class Articles {
      */
     public function update($id_article, $nom_article, $categorie, $prix_unitaire) {
         $sql = "UPDATE BNGRC_articles SET nom_article = :nom_article, categorie = :categorie, prix_unitaire = :prix_unitaire WHERE id_article = :id_article";
-        return $this->db->execute($sql, [
+        return $this->db->runQuery($sql, [
             'id_article' => $id_article,
             'nom_article' => $nom_article,
             'categorie' => $categorie,
@@ -67,7 +67,7 @@ class Articles {
      */
     public function delete($id_article) {
         $sql = "DELETE FROM BNGRC_articles WHERE id_article = :id_article";
-        return $this->db->execute($sql, ['id_article' => $id_article]);
+        return $this->db->runQuery($sql, ['id_article' => $id_article]);
     }
     
     /**

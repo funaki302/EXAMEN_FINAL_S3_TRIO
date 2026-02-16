@@ -48,12 +48,20 @@ $router->group('', function(Router $router) use ($app) {
 		]);
 	});
 
+	$router->get('/form', function() use ($app) {
+		$app->render('besoins', ['nonce' => $app->get('csp_nonce')]);
+	});
+
+
 	// Routes pour les villes
 	// IMPORTANT: Les routes spécifiques DOIVENT être avant les routes avec paramètres (@id)
 	$router->get('/villes', [$villesController, 'index']);
 	$router->get('/villes/stats', [$villesController, 'stats']);
 	$router->get('/villes/regions', [$villesController, 'regions']);
 	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
+	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
+	$router->get('/villes/@id', [$villesController, 'show']);
+
 	$router->get('/villes/region/@region', [$villesController, 'getByRegion']);
 	$router->get('/villes/@id', [$villesController, 'show']);
 	$router->post('/villes', [$villesController, 'create']);
@@ -61,7 +69,7 @@ $router->group('', function(Router $router) use ($app) {
 	$router->delete('/villes/@id', [$villesController, 'delete']);
 
 	// Routes pour les articles
-	$router->get('/articles', [$articlesController, 'index']);
+	$router->get('/api/getAll/articles', [$articlesController, 'getAll']);
 	$router->get('/articles/@id', [$articlesController, 'show']);
 	$router->get('/articles/categorie/@categorie', [$articlesController, 'getByCategorie']);
 	$router->post('/articles', [$articlesController, 'create']);
@@ -74,6 +82,7 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/besoins-villes/@id', [$besoinsVillesController, 'show']);
 	$router->get('/besoins-villes/ville/@id_ville', [$besoinsVillesController, 'getByVille']);
 	$router->get('/besoins-villes/article/@id_article', [$besoinsVillesController, 'getByArticle']);
+	$router->post('/api/create/besoins', [$besoinsVillesController, 'create']);
 	$router->post('/besoins-villes', [$besoinsVillesController, 'create']);
 	$router->put('/besoins-villes/@id', [$besoinsVillesController, 'update']);
 	$router->delete('/besoins-villes/@id', [$besoinsVillesController, 'delete']);
@@ -85,6 +94,7 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/dons-recus/@id', [$donsRecusController, 'show']);
 	$router->get('/dons-recus/article/@id_article', [$donsRecusController, 'getByArticle']);
 	$router->get('/dons-recus/date/@date', [$donsRecusController, 'getByDate']);
+	$router->post('/api/create/dons', [$donsRecusController, 'create']);
 	$router->post('/dons-recus', [$donsRecusController, 'create']);
 	$router->put('/dons-recus/@id', [$donsRecusController, 'update']);
 	$router->delete('/dons-recus/@id', [$donsRecusController, 'delete']);
