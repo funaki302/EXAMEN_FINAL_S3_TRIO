@@ -573,6 +573,12 @@
       },
     });
   </script>
-  <script src="/traitement-js/.js"></script>
+  <script nonce="<?= $nonce ?>">
+    window.BASE_URL = '<?= BASE_URL ?>';
+  </script>
+  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/traitement-js/dashboard.js"></script>
+
+  </div>
+  <!-- End main-content -->
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

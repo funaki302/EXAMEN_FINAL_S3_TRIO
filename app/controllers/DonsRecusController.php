@@ -3,15 +3,18 @@ namespace app\controllers;
 
 use app\models\DonsRecus;
 use app\models\Articles;
+use app\models\TransactionsArgent;
 use Flight;
 
 class DonsRecusController {
     private $donsModel;
     private $articlesModel;
+    private $transactionsModel;
     
     public function __construct() {
         $this->donsModel = new DonsRecus();
         $this->articlesModel = new Articles();
+        $this->transactionsModel = new TransactionsArgent();
     }
 
     public function index() {
@@ -147,6 +150,11 @@ class DonsRecusController {
             }
             
             $id_don = $this->donsModel->create($data['id_article'], $quantite_donnee, $date_reception);
+
+            $article = $this->articlesModel->getById($data['id_article']);
+            if (($article['categorie'] ?? '') === 'Argent') {
+                $this->transactionsModel->createEntreeDon($id_don, $quantite_donnee, $date_reception);
+            }
             
             Flight::json([
                 'success' => true,

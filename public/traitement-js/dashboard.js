@@ -72,8 +72,9 @@ function renderObjectifsTable(targetEl, villes, options) {
 }
 
 async function loadObjectifsDashboard(options) {
+  const baseUrl = window.BASE_URL || '';
   const targetId = options && options.targetId ? options.targetId : 'objectifs-dashboard';
-  const endpoint = options && options.endpoint ? options.endpoint : '/villes/objectifs-dashboard';
+  const endpoint = options && options.endpoint ? options.endpoint : baseUrl + '/villes/objectifs-dashboard';
   const maxHeight = options && options.maxHeight ? options.maxHeight : 420;
 
   const targetEl = document.getElementById(targetId);

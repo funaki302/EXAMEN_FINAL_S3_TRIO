@@ -25,9 +25,9 @@ class SecurityHeadersMiddleware
 			$tracyCssBypass = ' \'unsafe-inline\'';
 		}
 
-		$csp = "default-src 'self'; script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' https://kit.fontawesome.com https://ka-f.fontawesome.com; style-src 'self' {$tracyCssBypass} https://fonts.googleapis.com https://demos.creative-tim.com https://ka-f.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; img-src 'self' data:; connect-src 'self' https://ka-f.fontawesome.com;";
+		//$csp = "default-src 'self'; script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' https://kit.fontawesome.com https://ka-f.fontawesome.com; style-src 'self' {$tracyCssBypass} https://fonts.googleapis.com https://demos.creative-tim.com https://ka-f.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; img-src 'self' data:; connect-src 'self' https://ka-f.fontawesome.com;";
 		$this->app->response()->header('X-Frame-Options', 'SAMEORIGIN');
-		$this->app->response()->header("Content-Security-Policy", $csp);
+		//$this->app->response()->header("Content-Security-Policy", $csp);
 		$this->app->response()->header('X-XSS-Protection', '1; mode=block');
 		$this->app->response()->header('X-Content-Type-Options', 'nosniff');
 		$this->app->response()->header('Referrer-Policy', 'no-referrer-when-downgrade');

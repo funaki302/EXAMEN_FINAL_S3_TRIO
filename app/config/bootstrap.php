@@ -24,6 +24,15 @@ $app = Flight::app();
  */
 $config = require('config.php');
 
+$baseUrl = Flight::get('flight.base_url') ?? '/';
+$baseUrl = rtrim($baseUrl, '/');
+if ($baseUrl === '') {
+	$baseUrl = '';
+}
+if (defined('BASE_URL') === false) {
+	define('BASE_URL', $baseUrl);
+}
+
 /*
  * Load the services file.
  * A "service" is basically something special that you want to use in your app.

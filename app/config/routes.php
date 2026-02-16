@@ -1,39 +1,34 @@
 <?php
 
-use app\controllers\DiscussionController;
-use app\controllers\MessageController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
-use app\controllers\UserController;
 use app\controllers\VillesController;
 use app\controllers\ArticlesController;
 use app\controllers\BesoinsVillesController;
 use app\controllers\DonsRecusController;
 use app\controllers\DistributionsController;
+use app\controllers\DispatchController;
+use app\controllers\AchatsController;
 
 /** 
  * @var Router $router 
  * @var Engine $app
  */
 
-// This wraps all routes in the group with the SecurityHeadersMiddleware
-$router->group('', function(Router $router) use ($app) {
-	/*
-	$userController = new UserController();
-	$discussionController = new DiscussionController();
-	$messageController = new MessageController();
-	*/
+$app = \Flight::app();
 
-	// Initialisation du contrôleur des villes
+$router->group('', function(Router $router) use ($app) {
+
 	$villesController = new VillesController();
-	
-	// Initialisation des autres contrôleurs
 	$articlesController = new ArticlesController();
 	$besoinsVillesController = new BesoinsVillesController();
 	$donsRecusController = new DonsRecusController();
 	$distributionsController = new DistributionsController();
+	$dispatchController = new DispatchController();
+	$achatsController = new AchatsController();
 
+	// Dashboard
 	$router->get('/', function() use ($app) {
 		$villesModel = new \app\models\Villes();
 		$donsRecusModel = new \app\models\DonsRecus();
@@ -42,6 +37,7 @@ $router->group('', function(Router $router) use ($app) {
 
 		$app->render('dashboard', [
 			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'dashboard',
 			'nbVilles' => $villesModel->count(),
 			'nbDons' => $donsRecusModel->count(),
 			'nbDistributions' => $distributionsModel->count(),
@@ -50,84 +46,88 @@ $router->group('', function(Router $router) use ($app) {
 	});
 
 	$router->get('/form', function() use ($app) {
-		$app->render('besoins', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('besoins', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'form',
+		]);
+	});
+
+	$router->get('/tables', function() use ($app) {
+		$app->render('tables', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'tables',
+		]);
 	});
 
 	$router->get('/billing', function() use ($app) {
-		$app->render('billing', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('billing', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'billing',
+		]);
 	});
+
 	$router->get('/profile', function() use ($app) {
-		$app->render('profile', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('profile', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'profile',
+		]);
 	});
+
+	$router->get('/dispatch', function() use ($app) {
+		$app->render('dispatch', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'dispatch',
+		]);
+	});
+
+	$router->get('/achats', function() use ($app) {
+		$app->render('achats', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'achats',
+		]);
+	});
+
 	$router->get('/sign-in', function() use ($app) {
-		$app->render('sign-in', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('sign-in', [
+			'nonce' => $app->get('csp_nonce'),
+		]);
 	});
+
 	$router->get('/sign-up', function() use ($app) {
-		$app->render('sign-up', ['nonce' => $app->get('csp_nonce')]);
+		$app->render('sign-up', [
+			'nonce' => $app->get('csp_nonce'),
+		]);
 	});
-	$router->get('/tables', function() use ($app) {
-		$app->render('tables', ['nonce' => $app->get('csp_nonce')]);
+
+	$router->get('/rtl', function() use ($app) {
+		$app->redirect('/');
 	});
 
-
-	// Routes pour les villes
-
+	// API Villes
 	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
-	$router->get('/villes/@id', [$villesController, 'show']);
-
-	// IMPORTANT: Les routes spécifiques DOIVENT être avant les routes avec paramètres (@id)
-	$router->get('/villes', [$villesController, 'index']);
-	$router->get('/villes/stats', [$villesController, 'stats']);
-	$router->get('/villes/regions', [$villesController, 'regions']);
 	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
-	$router->get('/villes/region/@region', [$villesController, 'getByRegion']);
-	$router->get('/villes/@id', [$villesController, 'show']);
-	$router->post('/villes', [$villesController, 'create']);
-	$router->put('/villes/@id', [$villesController, 'update']);
-	$router->delete('/villes/@id', [$villesController, 'delete']);
 
-	// Routes pour les articles
+	// API Articles
 	$router->get('/api/getAll/articles', [$articlesController, 'getAll']);
-	$router->get('/articles/@id', [$articlesController, 'show']);
-	$router->get('/articles/categorie/@categorie', [$articlesController, 'getByCategorie']);
-	$router->post('/articles', [$articlesController, 'create']);
-	$router->put('/articles/@id', [$articlesController, 'update']);
-	$router->delete('/articles/@id', [$articlesController, 'delete']);
-	$router->get('/articles/categories', [$articlesController, 'categories']);
 
-	// Routes pour les besoins des villes
-	$router->get('/besoins-villes', [$besoinsVillesController, 'index']);
-	$router->get('/besoins-villes/@id', [$besoinsVillesController, 'show']);
-	$router->get('/besoins-villes/ville/@id_ville', [$besoinsVillesController, 'getByVille']);
-	$router->get('/besoins-villes/article/@id_article', [$besoinsVillesController, 'getByArticle']);
+	// API Besoins
 	$router->post('/api/create/besoins', [$besoinsVillesController, 'create']);
-	$router->post('/besoins-villes', [$besoinsVillesController, 'create']);
-	$router->put('/besoins-villes/@id', [$besoinsVillesController, 'update']);
-	$router->delete('/besoins-villes/@id', [$besoinsVillesController, 'delete']);
-	$router->get('/besoins-villes/stats/villes', [$besoinsVillesController, 'statsByVille']);
-	$router->get('/besoins-villes/stats/articles', [$besoinsVillesController, 'statsByArticle']);
 
-	// Routes pour les dons reçus
-	$router->get('/dons-recus', [$donsRecusController, 'index']);
-	$router->get('/dons-recus/@id', [$donsRecusController, 'show']);
-	$router->get('/dons-recus/article/@id_article', [$donsRecusController, 'getByArticle']);
-	$router->get('/dons-recus/date/@date', [$donsRecusController, 'getByDate']);
+	// API Dons
 	$router->post('/api/create/dons', [$donsRecusController, 'create']);
-	$router->post('/dons-recus', [$donsRecusController, 'create']);
-	$router->put('/dons-recus/@id', [$donsRecusController, 'update']);
-	$router->delete('/dons-recus/@id', [$donsRecusController, 'delete']);
-	$router->get('/dons-recus/stats/articles', [$donsRecusController, 'statsByArticle']);
-	$router->get('/dons-recus/stats/categories', [$donsRecusController, 'statsByCategorie']);
-	$router->get('/dons-recus/periode', [$donsRecusController, 'getByPeriod']);
-	$router->get('/dons-recus/valeur-totale', [$donsRecusController, 'valeurTotale']);
 
-	// Routes pour les distributions
-	$router->get('/distributions', [$distributionsController, 'index']);
-	$router->get('/distributions/@id', [$distributionsController, 'show']);
+	// API Distributions
 	$router->post('/distributions', [$distributionsController, 'create']);
-	$router->put('/distributions/@id', [$distributionsController, 'update']);
-	$router->delete('/distributions/@id', [$distributionsController, 'delete']);
-	$router->get('/distributions/count', [$distributionsController, 'count']);
 
-	
+	// Dispatch
+	$router->post('/dispatch/run', [$dispatchController, 'run']);
+	$router->post('/dispatch/validate', [$dispatchController, 'validate']);
+	$router->get('/dispatch/summary', [$dispatchController, 'summary']);
+
+	// Achats
+	$router->get('/achats/solde', [$achatsController, 'solde']);
+	$router->get('/achats/besoins-restants', [$achatsController, 'besoinsRestants']);
+	$router->post('/achats/simulate', [$achatsController, 'simulate']);
+	$router->post('/achats/validate', [$achatsController, 'validate']);
+
 }, [ SecurityHeadersMiddleware::class ]);
