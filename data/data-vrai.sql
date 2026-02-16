@@ -70,8 +70,8 @@ INSERT INTO BNGRC_articles (nom_article, categorie, prix_unitaire) VALUES
 -- Saisie des besoins par ville [cite: 14]
 -- Tamatave a besoin de 500kg de riz et 100 tôles
 INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee) VALUES 
-(2, 1, 500.00), 
-(2, 3, 100.00);
+(1, 1, 500.00), 
+(1, 3, 100.00);
 
 -- Saisie d'un don de Riz reçu le 16 fév à 14h 
 INSERT INTO BNGRC_dons_recus (id_article, quantite_donnee, date_reception) VALUES 

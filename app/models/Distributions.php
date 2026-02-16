@@ -34,7 +34,7 @@ class Distributions {
         if ($date_attribution) {
             $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee, date_attribution)
                     VALUES (:id_don, :id_ville, :quantite_attribuee, :date_attribution)";
-            $this->db->execute($sql, [
+            $this->db->runQuery($sql, [
                 'id_don' => $id_don,
                 'id_ville' => $id_ville,
                 'quantite_attribuee' => $quantite_attribuee,
@@ -43,7 +43,7 @@ class Distributions {
         } else {
             $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee)
                     VALUES (:id_don, :id_ville, :quantite_attribuee)";
-            $this->db->execute($sql, [
+            $this->db->runQuery($sql, [
                 'id_don' => $id_don,
                 'id_ville' => $id_ville,
                 'quantite_attribuee' => $quantite_attribuee
@@ -57,7 +57,7 @@ class Distributions {
         $sql = "UPDATE BNGRC_distributions
                 SET id_don = :id_don, id_ville = :id_ville, quantite_attribuee = :quantite_attribuee, date_attribution = :date_attribution
                 WHERE id_distribution = :id_distribution";
-        return $this->db->execute($sql, [
+        return $this->db->runQuery($sql, [
             'id_distribution' => $id_distribution,
             'id_don' => $id_don,
             'id_ville' => $id_ville,
@@ -68,7 +68,7 @@ class Distributions {
 
     public function delete($id_distribution) {
         $sql = "DELETE FROM BNGRC_distributions WHERE id_distribution = :id_distribution";
-        return $this->db->execute($sql, ['id_distribution' => $id_distribution]);
+        return $this->db->runQuery($sql, ['id_distribution' => $id_distribution]);
     }
 
     public function count() {

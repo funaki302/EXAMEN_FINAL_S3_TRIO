@@ -312,4 +312,11 @@
         </div>
       </div>
 
+    </div>
+    </div>
+
+  </div>
+  <!-- End main-content -->
+
+
 <?php include __DIR__ . '/partials/footer.php'; ?>

@@ -1,3 +1,82 @@
 Objectifs
 Dans une page tableau de bord, on doit voir la liste des villes avec les besoins, et les dons attribués à
 chaque ville.
+
+
+Fonctionnaliter de distribution :
+[] creer une nouvelle page distribution.php :
+On pourra selectionner une ville pour donner un dons 
+on choisira la quantite , pour l'argent ce sera le montant
+Donc on regroupera tout les dons par articles donc on aura un nombre total par articles 
+par exemple si des dons d'argent la somme s'accumulent et s'acumulent donnant un total
+(on crera un view pour cela si necessaire )
+puis on creera une nouvelle tables transactions pour voir les nombre d'entrer ou de sortie de dons 
+et c'est la qu'on verra le totals 
+
+donc quand on choisie une ville et qu'on choisie un articles ou plusieurs le nombre total de cette articles devraient diminuer 
+instantanement car le nombre sera moins et si il y a des entrer de dons elle sera plus(+) donc le nombre total de cette article donner augmentera
+
+puis les villes ont des besoin et donc je voudrais un ckech pour completer tout les besoins de cette villes
+et elle sera automatique enlever et 
+
+maintenant je voudrais mettre en pllace ceci : 
+ On simule le dispatch des dons par ordre de date et de saisie
+
+
+
+ =====================================================================
+TODO LIST : FONCTIONNALITÉ DE DISPATCH (RÉPARTITION) - PROJET BNGRC
+=====================================================================
+
+1. PRÉPARATION DE LA LOGIQUE SQL
+--------------------------------
+[ ] Créer une vue ou une requête pour lister les besoins non satisfaits.
+    - [cite_start]Trier par 'date_saisie' ASC pour respecter l'ordre de priorité[cite: 15].
+[ ] Créer une requête pour récupérer les dons disponibles en stock.
+    - [cite_start]Trier par 'date_reception' ASC (ordre de saisie des dons)[cite: 15].
+[cite_start][ ] S'assurer que chaque article (riz, tôle, argent, etc.) est traité séparément[cite: 10, 11, 12].
+
+2. DÉVELOPPEMENT DE L'ALGORITHME (BACKEND)
+------------------------------------------
+[ ] Récupérer la liste des dons non distribués.
+[ ] Pour chaque don (Boucle principale) :
+    - Identifier l'article concerné.
+    - Rechercher les besoins en attente pour cet article spécifique.
+    - Boucler sur les besoins trouvés (Boucle secondaire) :
+        * Calculer la quantité attribuable : MIN(Quantité restante du don, Quantité restante du besoin).
+        * Enregistrer l'attribution dans la table 'distributions'.
+        * Mettre à jour virtuellement le reste du don.
+        * Si le don est épuisé (quantité = 0), passer au don suivant.
+[cite_start][ ] Respecter la règle : le prix unitaire de l'article ne change jamais lors du calcul de la valeur[cite: 19].
+
+3. ENREGISTREMENT ET VALIDATION
+-------------------------------
+[ ] Créer les entrées dans la table 'distributions' :
+    - id_don
+    - id_ville
+    - quantite_attribuee
+[ ] Gérer le "reliquat" : Si un besoin n'est que partiellement comblé, il doit rester prioritaire pour le prochain don.
+[ ] Vérifier que la simulation ne distribue pas plus que ce qui a été collecté.
+
+4. AFFICHAGE DANS LE TABLEAU DE BORD
+------------------------------------
+[cite_start][ ] Calculer le "Besoin Total" par ville[cite: 17].
+[cite_start][ ] Calculer le "Don Attribué" par ville (Somme des distributions)[cite: 17].
+[ ] Calculer le "Reste à combler" (Besoin - Attribué).
+[cite_start][ ] Afficher la liste des villes avec ces trois colonnes sur la page Dashboard[cite: 17].
+
+5. TESTS ET VÉRIFICATIONS
+-------------------------
+[ ] Test 1 : Un seul don couvre plusieurs besoins de différentes villes (répartition).
+[ ] Test 2 : Un don ne couvre qu'une partie du premier besoin (besoin partiellement rempli).
+[ ] Test 3 : Plusieurs dons pour un seul besoin massif d'une ville.
+
+=====================================================================
+NB : La simulation doit être déclenchée soit à chaque saisie de don, 
+soit via un bouton "Simuler le Dispatch" sur le Dashboard.
+=====================================================================
+
+
+
+odo List : Achats et Récapitulation Ajax1. Configuration et Paramétrage[ ] Frais d'achat : Créer une table configs ou une variable globale pour stocker le taux x% (ex: 10%).[ ] Logique de conversion : Implémenter la formule : $Montant\_Total = Montant\_Achat \times (1 + \frac{x}{100})$.2. Développement de la Page d'Achat[ ] Interface de sélection : Créer une page affichant uniquement les besoins restants (Nature et Matériaux).[ ] Filtres : Ajouter un menu déroulant pour filtrer ces besoins par Ville.[ ] Contrôle d'intégrité : Ajouter une vérification (Message d'erreur) : "Impossible d'acheter si l'article est encore disponible dans les dons en nature restants".[ ] Action d'achat : Bouton permettant de transformer un montant "Argent" disponible en "Article Nature/Matériau".3. Évolution de la Simulation (Double validation)[ ] Bouton Simuler : Créer une fonction qui calcule le dispatch sans modifier la base de données (affichage simple des résultats).[ ] Bouton Valider : Créer une fonction qui écrit définitivement les attributions dans la table distributions.4. Page de Récapitulation (Ajax)[ ] Interface : Afficher trois indicateurs clés :Besoins totaux (en montant monétaire).Besoins satisfaits (en montant monétaire).Besoins restants (en montant monétaire).[ ] Bouton Actualiser : Utiliser Ajax pour mettre à jour ces montants sans recharger la page entière.Conception de la Page "Achat d'Articles"Cette page permet d'utiliser le cash disponible pour combler les manques. Voici comment la structurer :Structure de la Table des Achats (SQL additionnel) :Interface Utilisateur (Maquette suggérée) :Header : Solde d'argent total disponible (somme des dons en argent - achats déjà effectués).Filtre : Select "Ville" + Bouton Filtrer.Tableau des Besoins Restants :Colonne : Article | Ville | Quantité Manquante | Prix Unitaire | ActionL'action "Acheter" doit ouvrir une petite fenêtre (modal) pour saisir la quantité à acheter.Rappel important sur le calcul du frais :
+Si vous achetez pour 100 d'articles avec un frais de 10%, votre solde "Argent" doit être diminué de 110, mais la ville reçoit bien pour 100 de marchandises.

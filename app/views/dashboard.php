@@ -573,6 +573,13 @@
       },
     });
   </script>
-  <script src="/traitement-js/dashboard.js"></script>
+
+  <script>
+    window.BASE_URL = '<?= BASE_URL ?>';
+  </script>
+  <script src="<?= BASE_URL ?>/traitement-js/dashboard.js"></script>
+
+  </div>
+  <!-- End main-content -->
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
