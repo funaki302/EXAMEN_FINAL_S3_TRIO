@@ -72,7 +72,7 @@
       <script>
         window.BASE_URL = '<?= BASE_URL ?>';
       </script>
-      <script?>" src="<?= BASE_URL ?>/traitement-js/achats.js"></script>
+      <script src="<?= BASE_URL ?>/traitement-js/achats.js"></script>
 
     </div>
 
