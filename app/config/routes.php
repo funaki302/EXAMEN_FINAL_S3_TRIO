@@ -117,13 +117,17 @@ $router->group('', function(Router $router) use ($app) {
 	$router->post('/api/create/besoins', [$besoinsVillesController, 'create']);
 
 
-	// Routes pour les dons reçus
+	// API Dons
 	$router->get('/api/getAll/dons-recus', function() use ($app) {
 		$donsRecusController = new DonsRecusController();
 		$dons = $donsRecusController->getAll();
 		$app->json($dons);
 	});
-	// API Dons
+	$router->get('/api/getAll/dons-restants', function() use ($app) {
+		$donsRecusController = new DonsRecusController();
+		$dons = $donsRecusController->getDonsRestants();
+		$app->json($dons);
+	});
 	$router->post('/api/create/dons', [$donsRecusController, 'create']);
 
 	// API Distributions

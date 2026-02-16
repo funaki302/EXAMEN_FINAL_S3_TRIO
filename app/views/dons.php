@@ -5,20 +5,26 @@
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">
-            <div class="card-header pb-0">
-              <h6>Liste des Dons Recus</h6>
+            <div class="card-header pb-0 p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1"><i class="fas fa-hand-holding-heart me-2 text-success"></i>Liste des Dons Reçus</h6>
+                  <p class="text-sm text-secondary mb-0">Récapitulatif des articles donnés et leur distribution</p>
+                </div>
+                <span class="badge bg-gradient-dark" id="dons-count">0 dons</span>
+              </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0" id="dons-table">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">ID</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Article</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Categorie</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Prix unitaire</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Quantité</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Date de Donnation</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3" style="width: 60px;">#</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Article</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Catégorie</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Qté Donnée</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Qté Attribuée</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Qté Restante</th>
                     </tr>
                   </thead>
                   <tbody id="dons-table-body">
@@ -27,9 +33,9 @@
                 </table>
               </div>
             </div>
-        
+          </div>
+        </div>
       </div>
-    </div>
 
 
 <!-- Page-specific scripts -->

@@ -21,6 +21,10 @@ class DonsRecusController {
         return $this->donsModel->getAll();
     }
     
+    public function getDonsRestants() {
+        return $this->donsModel->getDonsRestants();
+    }
+    
     public function getById($id_don) {
         return $this->donsModel->getById($id_don);
     }

@@ -29,3 +29,14 @@ async function getAllDons() {
     const data = await dons.json();
     return data;
 }
+
+
+async function getDonsRestants() {
+    const dons = await fetch(BASE_URL+'/api/getAll/dons-restants');
+    if (!dons.ok) {
+        throw new Error("Error lors de getDonsRestants");
+    }
+
+    const data = await dons.json();
+    return data;
+}
