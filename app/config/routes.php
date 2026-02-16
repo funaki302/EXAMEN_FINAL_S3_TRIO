@@ -41,6 +41,7 @@ $router->group('', function(Router $router) use ($app) {
 		$distributionsModel = new \app\models\Distributions();
 
 		$app->render('dashboard', [
+			'nonce' => $app->get('csp_nonce'),
 			'nbVilles' => $villesModel->count(),
 			'nbDons' => $donsRecusModel->count(),
 			'nbDistributions' => $distributionsModel->count(),
@@ -52,16 +53,33 @@ $router->group('', function(Router $router) use ($app) {
 		$app->render('besoins', ['nonce' => $app->get('csp_nonce')]);
 	});
 
+	$router->get('/billing', function() use ($app) {
+		$app->render('billing', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/profile', function() use ($app) {
+		$app->render('profile', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/sign-in', function() use ($app) {
+		$app->render('sign-in', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/sign-up', function() use ($app) {
+		$app->render('sign-up', ['nonce' => $app->get('csp_nonce')]);
+	});
+	$router->get('/tables', function() use ($app) {
+		$app->render('tables', ['nonce' => $app->get('csp_nonce')]);
+	});
+
 
 	// Routes pour les villes
+
+	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
+	$router->get('/villes/@id', [$villesController, 'show']);
+
 	// IMPORTANT: Les routes spécifiques DOIVENT être avant les routes avec paramètres (@id)
 	$router->get('/villes', [$villesController, 'index']);
 	$router->get('/villes/stats', [$villesController, 'stats']);
 	$router->get('/villes/regions', [$villesController, 'regions']);
 	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
-	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
-	$router->get('/villes/@id', [$villesController, 'show']);
-
 	$router->get('/villes/region/@region', [$villesController, 'getByRegion']);
 	$router->get('/villes/@id', [$villesController, 'show']);
 	$router->post('/villes', [$villesController, 'create']);
