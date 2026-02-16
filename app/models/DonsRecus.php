@@ -23,6 +23,13 @@ class DonsRecus {
         return $this->db->fetchAll($sql);
     }
     
+
+    public function getDonsRestants() {
+        $sql = "SELECT *
+                FROM BNGRC_V_Dons_Restants_Par_Article 
+                ";
+        return $this->db->fetchAll($sql);
+    }
     /**
      * Récupérer un don par son ID
      */
