@@ -370,9 +370,9 @@
                         <i class="ni ni-circle-08 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
                       </div>
                       <h5 class="text-white font-weight-bolder mb-0 mt-3">
-                        1600
+                        <?= $nbVilles ?? 0 ?>
                       </h5>
-                      <span class="text-white text-sm">Users Active</span>
+                      <span class="text-white text-sm">Villes</span>
                     </div>
                     <div class="col-4">
                       <div class="dropdown text-end mb-6">
@@ -401,9 +401,9 @@
                         <i class="ni ni-active-40 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
                       </div>
                       <h5 class="text-white font-weight-bolder mb-0 mt-3">
-                        357
+                        <?= $nbDons ?? 0 ?>
                       </h5>
-                      <span class="text-white text-sm">Click Events</span>
+                      <span class="text-white text-sm">Dons reçus</span>
                     </div>
                     <div class="col-4">
                       <div class="dropstart text-end mb-6">
@@ -434,9 +434,9 @@
                         <i class="ni ni-cart text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
                       </div>
                       <h5 class="text-white font-weight-bolder mb-0 mt-3">
-                        2300
+                        <?= $nbDistributions ?? 0 ?>
                       </h5>
-                      <span class="text-white text-sm">Purchases</span>
+                      <span class="text-white text-sm">Distributions</span>
                     </div>
                     <div class="col-4">
                       <div class="dropdown text-end mb-6">
@@ -465,9 +465,9 @@
                         <i class="ni ni-like-2 text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
                       </div>
                       <h5 class="text-white font-weight-bolder mb-0 mt-3">
-                        940
+                        <?= $nbArticles ?? 0 ?>
                       </h5>
-                      <span class="text-white text-sm">Likes</span>
+                      <span class="text-white text-sm">Articles</span>
                     </div>
                     <div class="col-4">
                       <div class="dropstart text-end mb-6">

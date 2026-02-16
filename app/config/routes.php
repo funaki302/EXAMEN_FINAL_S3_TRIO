@@ -10,7 +10,7 @@ use app\controllers\VillesController;
 use app\controllers\ArticlesController;
 use app\controllers\BesoinsVillesController;
 use app\controllers\DonsRecusController;
-
+use app\controllers\DistributionsController;
 
 /** 
  * @var Router $router 
@@ -32,9 +32,20 @@ $router->group('', function(Router $router) use ($app) {
 	$articlesController = new ArticlesController();
 	$besoinsVillesController = new BesoinsVillesController();
 	$donsRecusController = new DonsRecusController();
+	$distributionsController = new DistributionsController();
 
 	$router->get('/', function() use ($app) {
-		$app->render('dashboard', []);
+		$villesModel = new \app\models\Villes();
+		$donsRecusModel = new \app\models\DonsRecus();
+		$articlesModel = new \app\models\Articles();
+		$distributionsModel = new \app\models\Distributions();
+
+		$app->render('dashboard', [
+			'nbVilles' => $villesModel->count(),
+			'nbDons' => $donsRecusModel->count(),
+			'nbDistributions' => $distributionsModel->count(),
+			'nbArticles' => $articlesModel->count(),
+		]);
 	});
 
 	// Routes pour les villes
@@ -79,6 +90,14 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/dons-recus/stats/categories', [$donsRecusController, 'statsByCategorie']);
 	$router->get('/dons-recus/periode', [$donsRecusController, 'getByPeriod']);
 	$router->get('/dons-recus/valeur-totale', [$donsRecusController, 'valeurTotale']);
+
+	// Routes pour les distributions
+	$router->get('/distributions', [$distributionsController, 'index']);
+	$router->get('/distributions/@id', [$distributionsController, 'show']);
+	$router->post('/distributions', [$distributionsController, 'create']);
+	$router->put('/distributions/@id', [$distributionsController, 'update']);
+	$router->delete('/distributions/@id', [$distributionsController, 'delete']);
+	$router->get('/distributions/count', [$distributionsController, 'count']);
 
 	
 }, [ SecurityHeadersMiddleware::class ]);
