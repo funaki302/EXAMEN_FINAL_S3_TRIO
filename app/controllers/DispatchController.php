@@ -11,6 +11,15 @@ class DispatchController {
         $this->dispatchModel = new Dispatch();
     }
 
+    private function readIdMode() {
+        $data = Flight::request()->data;
+        $idMode = isset($data['id_mode']) ? (int) $data['id_mode'] : 1;
+        if ($idMode < 1 || $idMode > 2) {
+            $idMode = 1;
+        }
+        return $idMode;
+    }
+
     public function run() {
         try {
             $now = date('Y-m-d H:i:s');
@@ -93,7 +102,9 @@ class DispatchController {
         try {
             $now = date('Y-m-d H:i:s');
 
-            $result = $this->dispatchModel->runDispatch($now, true, [], true);
+            $idMode = $this->readIdMode();
+
+            $result = $this->dispatchModel->runDispatch($now, true, [], true, $idMode);
 
             Flight::json([
                 'success' => true,
@@ -116,7 +127,9 @@ class DispatchController {
         try {
             $now = date('Y-m-d H:i:s');
 
-            $result = $this->dispatchModel->runDispatchProportionnel($now, true);
+            $idMode = $this->readIdMode();
+
+            $result = $this->dispatchModel->runDispatchProportionnel($now, true, $idMode);
 
             Flight::json([
                 'success' => true,
@@ -139,7 +152,9 @@ class DispatchController {
         try {
             $now = date('Y-m-d H:i:s');
 
-            $result = $this->dispatchModel->runDispatch($now, true);
+            $idMode = $this->readIdMode();
+
+            $result = $this->dispatchModel->runDispatch($now, true, [], false, $idMode);
 
             Flight::json([
                 'success' => true,

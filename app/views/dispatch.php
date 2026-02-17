@@ -2,7 +2,7 @@
 <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container-fluid py-4">
-      <div class="row" id="dispatch-restants-cards"></div>
+      <div id="dispatch-restants-cards" class="d-flex flex-row flex-nowrap overflow-auto pb-2 mb-3" style="gap: 16px;"></div>
 
       <div class="row mb-4" id="dispatch-besoins-stats">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -45,14 +45,28 @@
             <div class="card-header pb-0">
               <div class="d-flex align-items-center justify-content-between">
                 <h6 class="mb-0">Simulation du Dispatch</h6>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 align-items-center">
                   <button id="btn-dispatch-refresh" class="btn btn-secondary btn-sm mb-0">Actualiser</button>
-                  <button id="btn-dispatch-run" class="btn btn-primary btn-sm mb-0">Simuler le Dispatch</button>
-                  <button id="btn-dispatch-run-smallest" class="btn btn-info btn-sm mb-0">Petits besoins d'abord</button>
-                  <button id="btn-dispatch-validate-smallest" class="btn btn-outline-info btn-sm mb-0">Valider (petits besoins)</button>
-                  <button id="btn-dispatch-run-proportionnel" class="btn btn-warning btn-sm mb-0">Proportion</button>
-                  <button id="btn-dispatch-validate-proportionnel" class="btn btn-outline-warning btn-sm mb-0">Valider (proportion)</button>
-                  <button id="btn-dispatch-validate" class="btn btn-success btn-sm mb-0">Valider le Dispatch</button>
+
+                  <select id="select-dispatch-algo" class="form-select form-select-sm" style="min-width: 220px;">
+                    <option value="dispatch" selected>Dispatch</option>
+                    <option value="smallest">Petite demande</option>
+                    <option value="proportionnel">Proportionnelle</option>
+                  </select>
+
+                  <select id="select-dispatch-action" class="form-select form-select-sm" style="min-width: 140px;">
+                    <option value="simulate" selected>Simuler</option>
+                    <option value="validate">Valider</option>
+                  </select>
+
+                  <div id="dispatch-mode-bd-wrapper" style="display: none;">
+                    <select id="select-dispatch-id-mode" class="form-select form-select-sm" style="min-width: 160px;">
+                      <option value="2" selected>Test</option>
+                      <option value="1">Origine</option>
+                    </select>
+                  </div>
+
+                  <button id="btn-dispatch-execute" class="btn btn-primary btn-sm mb-0">Exécuter</button>
                 </div>
               </div>
               <p class="text-sm text-secondary mb-0 mt-2">

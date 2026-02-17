@@ -12,7 +12,7 @@ class Dispatch {
         $this->distributionsModel = new Distributions();
     }
 
-    private function allocateProportionnelle($dateAttribution, $persist = true) {
+    private function allocateProportionnelle($dateAttribution, $persist = true, $idMode = 1) {
         $dons = $this->getDonsAvecReste();
         $besoins = $this->getBesoinsAvecReste();
 
@@ -100,7 +100,7 @@ class Dispatch {
                     $idVille = (int) ($need['id_ville'] ?? 0);
 
                     if ($persist === true) {
-                        $this->distributionsModel->create($idDon, $idVille, $attrib, $dateAttribution);
+                        $this->distributionsModel->create($idDon, $idVille, $attrib, $dateAttribution, $idMode);
                     }
 
                     $key = $idVille . ':' . $idArticle;
@@ -128,13 +128,13 @@ class Dispatch {
         ];
     }
 
-    public function runDispatchProportionnel($dateAttribution, $persist = true) {
-        $res = $this->allocateProportionnelle($dateAttribution, $persist);
+    public function runDispatchProportionnel($dateAttribution, $persist = true, $idMode = 1) {
+        $res = $this->allocateProportionnelle($dateAttribution, $persist, $idMode);
         return $res['dispatch'];
     }
 
     public function getSimulatedSummaryRowsProportionnel($dateAttribution) {
-        $res = $this->allocateProportionnelle($dateAttribution, false);
+        $res = $this->allocateProportionnelle($dateAttribution, false, 1);
         $attribParVilleArticle = $res['attrib_map'] ?? [];
 
         $base = $this->getSummaryRows();
@@ -157,7 +157,7 @@ class Dispatch {
         ];
     }
 
-    public function runDispatch($dateAttribution, $persist = true, $extraDons = [], $smallestNeedsFirst = false) {
+    public function runDispatch($dateAttribution, $persist = true, $extraDons = [], $smallestNeedsFirst = false, $idMode = 1) {
         $dons = $this->getDonsAvecReste();
 
         if (is_array($extraDons) && count($extraDons) > 0) {
@@ -235,7 +235,7 @@ class Dispatch {
                 }
 
                 if ($persist === true) {
-                    $this->distributionsModel->create($idDon, (int) $need['id_ville'], $attrib, $dateAttribution);
+                    $this->distributionsModel->create($idDon, (int) $need['id_ville'], $attrib, $dateAttribution, $idMode);
                 }
 
                 $resteDon -= $attrib;

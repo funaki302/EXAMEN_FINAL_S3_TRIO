@@ -136,6 +136,7 @@ $router->group('', function(Router $router) use ($app) {
 		$dons = $donsRecusController->getAll();
 		$app->json($dons);
 	});
+	$router->get('/api/dashboard/dons-pourcentages', [$donsRecusController, 'dashboardPourcentages']);
 	$router->get('/api/getAll/dons-restants', function() use ($app) {
 		$donsRecusController = new DonsRecusController();
 		$dons = $donsRecusController->getDonsRestants();

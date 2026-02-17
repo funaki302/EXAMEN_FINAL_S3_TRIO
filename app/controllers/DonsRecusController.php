@@ -324,4 +324,37 @@ class DonsRecusController {
             ], 500);
         }
     }
+
+    public function dashboardPourcentages() {
+        try {
+            $vals = $this->donsModel->getDashboardValeursDons();
+
+            $total = (float) ($vals['valeur_totale'] ?? 0);
+            $distribue = (float) ($vals['valeur_distribuee'] ?? 0);
+            $attente = (float) ($vals['valeur_restante'] ?? 0);
+            $restant = max(0.0, $total - $distribue - $attente);
+
+            $pctDistribue = $total > 0 ? ($distribue / $total) * 100.0 : 0.0;
+            $pctAttente = $total > 0 ? ($attente / $total) * 100.0 : 0.0;
+            $pctRestant = $total > 0 ? ($restant / $total) * 100.0 : 0.0;
+
+            Flight::json([
+                'success' => true,
+                'data' => [
+                    'valeur_totale' => $total,
+                    'valeur_distribuee' => $distribue,
+                    'valeur_en_attente' => $attente,
+                    'valeur_restante' => $restant,
+                    'pct_distribue' => $pctDistribue,
+                    'pct_en_attente' => $pctAttente,
+                    'pct_restant' => $pctRestant,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Flight::json([
+                'success' => false,
+                'message' => 'Erreur lors du chargement des statistiques des dons: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }

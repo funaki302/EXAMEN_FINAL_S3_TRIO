@@ -8,6 +8,83 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function formatMoneyAriary(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '0 Ar';
+  return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' Ar';
+}
+
+function clampPercent(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, n));
+}
+
+function setBar(barEl, pct) {
+  if (!barEl) return;
+  const p = clampPercent(pct);
+  barEl.style.width = p.toFixed(2) + '%';
+  barEl.setAttribute('aria-valuenow', String(p));
+}
+
+async function loadDonsPourcentagesDashboard() {
+  const baseUrl = window.BASE_URL || '';
+
+  const elPctDistribue = document.getElementById('dash-pct-distribue');
+  const elPctAttente = document.getElementById('dash-pct-attente');
+  const elPctRestant = document.getElementById('dash-pct-restant');
+
+  const barDistribue = document.getElementById('dash-bar-distribue');
+  const barAttente = document.getElementById('dash-bar-attente');
+  const barRestant = document.getElementById('dash-bar-restant');
+
+  const elTotal = document.getElementById('dash-dons-total');
+  const elDistribues = document.getElementById('dash-dons-distribues');
+  const elAttente = document.getElementById('dash-dons-attente');
+
+  const btnRefresh = document.getElementById('btn-dash-refresh-dons');
+  if (btnRefresh) btnRefresh.disabled = true;
+
+  try {
+    const res = await fetch(baseUrl + '/api/dashboard/dons-pourcentages', { headers: { Accept: 'application/json' } });
+    const json = await res.json();
+
+    if (!json || json.success !== true) {
+      const fallback = '0%';
+      if (elPctDistribue) elPctDistribue.textContent = fallback;
+      if (elPctAttente) elPctAttente.textContent = fallback;
+      if (elPctRestant) elPctRestant.textContent = fallback;
+      setBar(barDistribue, 0);
+      setBar(barAttente, 0);
+      setBar(barRestant, 0);
+      return;
+    }
+
+    const d = json.data || {};
+    const pctDistribue = clampPercent(d.pct_distribue || 0);
+    const pctAttente = clampPercent(d.pct_en_attente || 0);
+    const pctRestant = clampPercent(d.pct_restant || 0);
+
+    if (elPctDistribue) elPctDistribue.textContent = pctDistribue.toFixed(2) + '%';
+    if (elPctAttente) elPctAttente.textContent = pctAttente.toFixed(2) + '%';
+    if (elPctRestant) elPctRestant.textContent = pctRestant.toFixed(2) + '%';
+
+    setBar(barDistribue, pctDistribue);
+    setBar(barAttente, pctAttente);
+    setBar(barRestant, pctRestant);
+
+    if (elTotal) elTotal.textContent = formatMoneyAriary(d.valeur_totale || 0);
+    if (elDistribues) elDistribues.textContent = formatMoneyAriary(d.valeur_distribuee || 0);
+    if (elAttente) elAttente.textContent = formatMoneyAriary(d.valeur_en_attente || 0);
+  } catch (e) {
+    setBar(barDistribue, 0);
+    setBar(barAttente, 0);
+    setBar(barRestant, 0);
+  } finally {
+    if (btnRefresh) btnRefresh.disabled = false;
+  }
+}
+
 function renderBadges(items, emptyText) {
   if (!items || items.length === 0) {
     return `<p class="text-xs text-secondary mb-0">${emptyText || 'Aucun'}</p>`;
@@ -20,7 +97,6 @@ function renderBadges(items, emptyText) {
     })
     .join('');
 }
-
 
 function loadVilles(villes) {
   const container = document.getElementById('objectifs-dashboard');
@@ -87,7 +163,6 @@ function loadVilles(villes) {
 
   container.appendChild(list);
 }
-
 
 function voirPlus(ville, detailId, itemEl) {
   const detailDiv = document.getElementById(detailId);
@@ -160,7 +235,6 @@ function voirPlus(ville, detailId, itemEl) {
   if (chevron) chevron.style.transform = 'rotate(180deg)';
 }
 
-
 async function loadObjectifsDashboard() {
   const baseUrl  = window.BASE_URL || '';
   const endpoint = baseUrl + '/villes/objectifs-dashboard';
@@ -187,4 +261,13 @@ async function loadObjectifsDashboard() {
 
 document.addEventListener('DOMContentLoaded', function () {
   loadObjectifsDashboard();
+
+  loadDonsPourcentagesDashboard();
+
+  const btnRefresh = document.getElementById('btn-dash-refresh-dons');
+  if (btnRefresh) {
+    btnRefresh.addEventListener('click', function () {
+      loadDonsPourcentagesDashboard();
+    });
+  }
 });

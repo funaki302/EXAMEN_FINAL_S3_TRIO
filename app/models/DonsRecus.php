@@ -159,6 +159,30 @@ class DonsRecus {
         $result = $this->db->fetchRow($sql);
         return $result['valeur_totale'] ?? 0;
     }
+
+    public function getDashboardValeursDons() {
+        $sqlTotal = "SELECT COALESCE(SUM(dr.quantite_donnee * a.prix_unitaire), 0) AS valeur_totale
+                     FROM BNGRC_dons_recus dr
+                     JOIN BNGRC_articles a ON dr.id_article = a.id_article";
+
+        $sqlDistribue = "SELECT COALESCE(SUM(di.quantite_attribuee * a.prix_unitaire), 0) AS valeur_distribuee
+                         FROM BNGRC_distributions di
+                         JOIN BNGRC_dons_recus dr ON di.id_don = dr.id_don
+                         JOIN BNGRC_articles a ON dr.id_article = a.id_article";
+
+        $sqlRestante = "SELECT COALESCE(SUM(v.quantite_restante * v.prix_unitaire), 0) AS valeur_restante
+                        FROM BNGRC_V_Dons_Restants_Par_Article v";
+
+        $totalRow = $this->db->fetchRow($sqlTotal);
+        $distribRow = $this->db->fetchRow($sqlDistribue);
+        $restRow = $this->db->fetchRow($sqlRestante);
+
+        return [
+            'valeur_totale' => (float) ($totalRow['valeur_totale'] ?? 0),
+            'valeur_distribuee' => (float) ($distribRow['valeur_distribuee'] ?? 0),
+            'valeur_restante' => (float) ($restRow['valeur_restante'] ?? 0),
+        ];
+    }
     
     /**
      * Vérifier si un don existe

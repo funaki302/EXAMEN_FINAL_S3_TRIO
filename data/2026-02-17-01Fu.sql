@@ -1,5 +1,5 @@
 -- ==========================================
--- CRÉATION DE LA TABLE DES MODES
+-- CRATION DE LA TABLE DES MODES
 -- ==========================================
 
 CREATE TABLE IF NOT EXISTS BNGRC_modes (
@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS BNGRC_modes (
     description VARCHAR(255)
 ) ENGINE=InnoDB;
 
--- Insertion des modes par défaut
+-- Insertion des modes par dfaut
 INSERT INTO BNGRC_modes (id_mode, nom_mode, description) VALUES 
-(1, 'origine', 'Données de production/origine - ne seront jamais supprimées'),
-(2, 'teste', 'Données de test - peuvent être supprimées lors de la réinitialisation')
+(1, 'origine', 'Donnes de production/origine - ne seront jamais supprimes'),
+(2, 'teste', 'Donnes de test - peuvent être supprimes lors de la rinitialisation')
 ON DUPLICATE KEY UPDATE nom_mode = VALUES(nom_mode);
 
 -- ==========================================
--- AJOUT DE LA COLONNE id_mode DANS LES TABLES CONCERNÉES
+-- AJOUT DE LA COLONNE id_mode DANS LES TABLES CONCERNES
 -- ==========================================
 
 -- Table BNGRC_besoins_villes
@@ -44,7 +44,7 @@ ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_transactions_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- ==========================================
--- PROCÉDURE DE RÉINITIALISATION DES DONNÉES DE TEST
+-- PROCDURE DE RINITIALISATION DES DONNES DE TEST
 -- ==========================================
 
 DELIMITER //
@@ -56,12 +56,12 @@ BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erreur lors de la réinitialisation des données de test';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Erreur lors de la rinitialisation des donnes de test';
     END;
     
     START TRANSACTION;
     
-    -- Récupérer l'id du mode 'teste'
+    -- Rcuprer l'id du mode 'teste'
     SET @id_mode_teste = (SELECT id_mode FROM BNGRC_modes WHERE nom_mode = 'teste');
     
     -- Supprimer les distributions de test
@@ -81,7 +81,7 @@ BEGIN
     
     COMMIT;
     
-    SELECT 'Réinitialisation des données de test effectuée avec succès' AS message;
+    SELECT 'Rinitialisation des donnes de test effectue avec succès' AS message;
 END //
 
 DELIMITER ;
