@@ -81,6 +81,13 @@ $router->group('', function(Router $router) use ($app) {
 		]);
 	});
 
+	$router->get('/liste-besoins', function() use ($app) {
+		$app->render('liste-besoins', [
+			'nonce' => $app->get('csp_nonce'),
+			'active_page' => 'liste-besoins',
+		]);
+	});
+
 	$router->get('/dispatch', function() use ($app) {
 		$app->render('dispatch', [
 			'nonce' => $app->get('csp_nonce'),
@@ -128,6 +135,10 @@ $router->group('', function(Router $router) use ($app) {
 		$besoinsVillesController = new BesoinsVillesController();
 		$dons = $besoinsVillesController->getAll();
 		$app->json($dons);
+	});
+	$router->put('/api/update/besoins/@id', function($id) use ($app) {
+		$besoinsVillesController = new BesoinsVillesController();
+		$besoinsVillesController->update($id);
 	});
 
 	// API Dons

@@ -16,7 +16,7 @@ class BesoinsVilles {
      * Récupérer tous les besoins des villes
      */
     public function getAll() {
-        $sql = "SELECT bv.*, v.nom_ville, v.region, a.nom_article, a.categorie 
+        $sql = "SELECT bv.*, v.nom_ville, v.region, a.nom_article, a.categorie, a.prix_unitaire
                 FROM BNGRC_besoins_villes bv 
                 JOIN BNGRC_villes v ON bv.id_ville = v.id_ville 
                 JOIN BNGRC_articles a ON bv.id_article = a.id_article 

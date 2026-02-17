@@ -20,27 +20,27 @@ ON DUPLICATE KEY UPDATE nom_mode = VALUES(nom_mode);
 
 -- Table BNGRC_besoins_villes
 ALTER TABLE BNGRC_besoins_villes 
-ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
+ADD COLUMN id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_besoins_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- Table BNGRC_dons_recus
 ALTER TABLE BNGRC_dons_recus 
-ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
+ADD COLUMN id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_dons_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- Table BNGRC_distributions
 ALTER TABLE BNGRC_distributions 
-ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
+ADD COLUMN id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_distributions_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- Table BNGRC_achats
 ALTER TABLE BNGRC_achats 
-ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
+ADD COLUMN id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_achats_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- Table BNGRC_transactions_argent
 ALTER TABLE BNGRC_transactions_argent 
-ADD COLUMN IF NOT EXISTS id_mode INT NOT NULL DEFAULT 2,
+ADD COLUMN id_mode INT NOT NULL DEFAULT 2,
 ADD CONSTRAINT fk_transactions_mode FOREIGN KEY (id_mode) REFERENCES BNGRC_modes(id_mode);
 
 -- ==========================================
