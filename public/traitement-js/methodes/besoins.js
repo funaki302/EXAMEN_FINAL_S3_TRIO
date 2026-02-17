@@ -12,6 +12,8 @@ window.addEventListener('load', async function () {
       
       loadFormBesoin(villes, articles, modes);
       loadFormDon(articles, modes);
+      loadFormArticle();
+      loadFormVille();
       showForm('besoin');
 
       document.querySelector('#btn-form-besoin').addEventListener('click', function() {
@@ -19,6 +21,12 @@ window.addEventListener('load', async function () {
       });
       document.querySelector('#btn-form-don').addEventListener('click', function() {
           showForm('don');
+      });
+      document.querySelector('#btn-form-article').addEventListener('click', function() {
+          showForm('article');
+      });
+      document.querySelector('#btn-form-ville').addEventListener('click', function() {
+          showForm('ville');
       });
     } catch (e) {
       console.error('Erreur:', e);
@@ -332,18 +340,221 @@ function loadFormDon(articles, modes){
 function showForm(type) {
     const formBesoin = document.querySelector('#form-besoin');
     const formDon = document.querySelector('#form-don');
+    const formArticle = document.querySelector('#form-article');
+    const formVille = document.querySelector('#form-ville');
     const btnBesoin = document.querySelector('#btn-form-besoin');
     const btnDon = document.querySelector('#btn-form-don');
+    const btnArticle = document.querySelector('#btn-form-article');
+    const btnVille = document.querySelector('#btn-form-ville');
 
+    // Cacher tous les formulaires
+    formBesoin.style.display = 'none';
+    formDon.style.display = 'none';
+    formArticle.style.display = 'none';
+    formVille.style.display = 'none';
+
+    // Réinitialiser tous les boutons en outline
+    btnBesoin.className = 'btn btn-outline-primary w-100 mb-0';
+    btnDon.className = 'btn btn-outline-success w-100 mb-0';
+    btnArticle.className = 'btn btn-outline-info w-100 mb-0';
+    btnVille.className = 'btn btn-outline-warning w-100 mb-0';
+
+    // Afficher le formulaire sélectionné et activer son bouton
     if (type === 'besoin') {
         formBesoin.style.display = 'block';
-        formDon.style.display = 'none';
         btnBesoin.className = 'btn btn-primary w-100 mb-0';
-        btnDon.className = 'btn btn-outline-success w-100 mb-0';
-    } else {
-        formBesoin.style.display = 'none';
+    } else if (type === 'don') {
         formDon.style.display = 'block';
-        btnBesoin.className = 'btn btn-outline-primary w-100 mb-0';
         btnDon.className = 'btn btn-success w-100 mb-0';
+    } else if (type === 'article') {
+        formArticle.style.display = 'block';
+        btnArticle.className = 'btn btn-info w-100 mb-0';
+    } else if (type === 'ville') {
+        formVille.style.display = 'block';
+        btnVille.className = 'btn btn-warning w-100 mb-0';
     }
+}
+
+function loadFormArticle() {
+    const div = document.querySelector('#form-article');
+
+    if (!div) {
+        console.error('Le div #form-article n\'a pas été trouvé!');
+        return;
+    }
+
+    // Créer le formulaire
+    const form = document.createElement('form');
+    form.className = 'card card-body p-4';
+    form.innerHTML = `
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="mb-4">Ajout d'un Article</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="article-nom" class="form-label">Nom de l'article</label>
+                <input type="text" class="form-control" id="article-nom" required placeholder="Ex: Riz, Huile, Tôle...">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="article-categorie" class="form-label">Catégorie</label>
+                <select class="form-select" id="article-categorie" required>
+                    <option value="">Sélectionner une catégorie</option>
+                    <option value="Nature">Nature</option>
+                    <option value="Matériaux">Matériaux</option>
+                    <option value="Argent">Argent</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="article-prix" class="form-label">Prix unitaire (Ar)</label>
+                <input type="number" class="form-control" id="article-prix" min="0" step="0.01" required placeholder="Ex: 3200">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3 ms-auto d-flex align-items-end">
+                <button type="submit" class="btn btn-info w-100">
+                    <i class="fas fa-plus me-2"></i>Ajouter l'article
+                </button>
+            </div>
+        </div>
+        <div id="article-message" class="mt-3"></div>
+    `;
+
+    // Gérer la soumission du formulaire
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const messageDiv = form.querySelector('#article-message');
+        messageDiv.innerHTML = '';
+
+        const nomArticle = form.querySelector('#article-nom').value.trim();
+        const categorie = form.querySelector('#article-categorie').value;
+        const prixUnitaire = form.querySelector('#article-prix').value;
+
+        // Validation
+        if (!nomArticle || !categorie || !prixUnitaire) {
+            messageDiv.innerHTML = '<div class="alert alert-warning">Veuillez remplir tous les champs</div>';
+            return;
+        }
+
+        if (parseFloat(prixUnitaire) < 0) {
+            messageDiv.innerHTML = '<div class="alert alert-warning">Le prix doit être positif ou nul</div>';
+            return;
+        }
+
+        try {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>En cours...';
+
+            const data = {
+                nom_article: nomArticle,
+                categorie: categorie,
+                prix_unitaire: parseFloat(prixUnitaire)
+            };
+
+            const result = await createArticle(data);
+
+            if (result.success) {
+                messageDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Article ajouté avec succès!</div>';
+                form.reset();
+            } else {
+                messageDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur: ${result.message}</div>`;
+            }
+        } catch (error) {
+            messageDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur lors de l\'ajout de l\'article</div>';
+        } finally {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Ajouter l\'article';
+        }
+    });
+
+    div.innerHTML = '';
+    div.appendChild(form);
+}
+
+function loadFormVille() {
+    const div = document.querySelector('#form-ville');
+
+    if (!div) {
+        console.error('Le div #form-ville n\'a pas été trouvé!');
+        return;
+    }
+
+    // Créer le formulaire
+    const form = document.createElement('form');
+    form.className = 'card card-body p-4';
+    form.innerHTML = `
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="mb-4">Ajout d'une Ville</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="ville-nom" class="form-label">Nom de la ville</label>
+                <input type="text" class="form-control" id="ville-nom" required placeholder="Ex: Antananarivo, Tamatave...">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="ville-region" class="form-label">Région</label>
+                <input type="text" class="form-control" id="ville-region" required placeholder="Ex: Analamanga, Atsinanana...">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3 ms-auto d-flex align-items-end">
+                <button type="submit" class="btn btn-warning w-100">
+                    <i class="fas fa-plus me-2"></i>Ajouter la ville
+                </button>
+            </div>
+        </div>
+        <div id="ville-message" class="mt-3"></div>
+    `;
+
+    // Gérer la soumission du formulaire
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const messageDiv = form.querySelector('#ville-message');
+        messageDiv.innerHTML = '';
+
+        const nomVille = form.querySelector('#ville-nom').value.trim();
+        const region = form.querySelector('#ville-region').value.trim();
+
+        // Validation
+        if (!nomVille || !region) {
+            messageDiv.innerHTML = '<div class="alert alert-warning">Veuillez remplir tous les champs</div>';
+            return;
+        }
+
+        try {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>En cours...';
+
+            const data = {
+                nom_ville: nomVille,
+                region: region
+            };
+
+            const result = await createVille(data);
+
+            if (result.success) {
+                messageDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Ville ajoutée avec succès!</div>';
+                form.reset();
+            } else {
+                messageDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur: ${result.message}</div>`;
+            }
+        } catch (error) {
+            messageDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur lors de l\'ajout de la ville</div>';
+        } finally {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Ajouter la ville';
+        }
+    });
+
+    div.innerHTML = '';
+    div.appendChild(form);
 }

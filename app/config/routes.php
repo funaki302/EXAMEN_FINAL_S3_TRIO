@@ -114,9 +114,13 @@ $router->group('', function(Router $router) use ($app) {
 	// API Villes
 	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
 	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
+	$router->post('/api/create/villes', [$villesController, 'create']);
+
 
 	// API Articles
 	$router->get('/api/getAll/articles', [$articlesController, 'getAll']);
+	$router->post('/api/create/articles', [$articlesController, 'create']);
+
 
 	// API Besoins
 	$router->post('/api/create/besoins', [$besoinsVillesController, 'create']);
