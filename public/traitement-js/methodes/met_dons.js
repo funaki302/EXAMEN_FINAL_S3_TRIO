@@ -40,3 +40,30 @@ async function getDonsRestants() {
     const data = await dons.json();
     return data;
 }
+
+async function updateDon(data) {
+    try {
+        const response = await fetch(BASE_URL+'/api/update/dons/' + data.id_don, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+
+        console.log('Réponse brute du serveur:', response);
+
+        if (!response.ok) {
+            const errorText = await response.text(); 
+            console.error('Erreur serveur:', errorText); 
+            throw new Error("Erreur lors de la mise à jour du don: " + errorText);
+        }
+
+        const result = await response.json();
+        console.log('Résultat JSON du serveur:', result); 
+        return result;
+    } catch (error) {
+        console.error('Erreur attrapée dans updateDon:', error);
+        throw error;
+    }
+}

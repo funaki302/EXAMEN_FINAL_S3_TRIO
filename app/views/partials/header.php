@@ -130,7 +130,7 @@
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <img src="<?= BASE_URL ?>/assets/icons/dispatch.svg" width="18" height="18" alt="Dispatch">
           </div>
-          <span class="nav-link-text ms-1">Dispatch</span>
+          <span class="nav-link-text ms-1">Distribution</span>
           </a>
         </li>
 

@@ -122,7 +122,6 @@ function loadListeBesoins(besoins) {
                 </td>
             `;
 
-            // Insérer la ligne de formulaire après la ligne actuelle
             parentTR.insertAdjacentElement('afterend', editRow);
 
             // Gestion de la validation du formulaire

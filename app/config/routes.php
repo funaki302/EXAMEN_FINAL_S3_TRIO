@@ -154,6 +154,10 @@ $router->group('', function(Router $router) use ($app) {
 		$app->json($dons);
 	});
 	$router->post('/api/create/dons', [$donsRecusController, 'create']);
+	$router->put('/api/update/dons/@id', function($id) use ($app) {
+		$donsRecusController = new DonsRecusController();
+		$donsRecusController->update($id);
+	});
 
 	// API Distributions
 	$router->post('/distributions', [$distributionsController, 'create']);
