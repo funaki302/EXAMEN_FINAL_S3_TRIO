@@ -62,13 +62,15 @@ class BesoinsVilles {
     
     /**
      * Ajouter un nouveau besoin
+     * @param int $id_mode - 1 = origine, 2 = teste (par défaut: 1)
      */
-    public function create($id_ville, $id_article, $quantite_demandee) {
-        $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee) VALUES (:id_ville, :id_article, :quantite_demandee)";
+    public function create($id_ville, $id_article, $quantite_demandee, $id_mode = 1) {
+        $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee, id_mode) VALUES (:id_ville, :id_article, :quantite_demandee, :id_mode)";
         $this->db->runQuery($sql, [
             'id_ville' => $id_ville,
             'id_article' => $id_article,
-            'quantite_demandee' => $quantite_demandee
+            'quantite_demandee' => $quantite_demandee,
+            'id_mode' => $id_mode
         ]);
         return $this->db->lastInsertId();
     }

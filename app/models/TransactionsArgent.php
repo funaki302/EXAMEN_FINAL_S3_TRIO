@@ -10,27 +10,29 @@ class TransactionsArgent {
         $this->db = Flight::db();
     }
 
-    public function createEntreeDon($idDon, $montant, $dateTransaction) {
-        $sql = "INSERT INTO BNGRC_transactions_argent (type_transaction, montant, id_don, id_achat, date_transaction)
-                VALUES ('ENTREE_DON', :montant, :id_don, NULL, :date_transaction)";
+    public function createEntreeDon($idDon, $montant, $dateTransaction, $idMode = 1) {
+        $sql = "INSERT INTO BNGRC_transactions_argent (type_transaction, montant, id_don, id_achat, date_transaction, id_mode)
+                VALUES ('ENTREE_DON', :montant, :id_don, NULL, :date_transaction, :id_mode)";
 
         $this->db->runQuery($sql, [
             'montant' => $montant,
             'id_don' => $idDon,
             'date_transaction' => $dateTransaction,
+            'id_mode' => $idMode,
         ]);
 
         return $this->db->lastInsertId();
     }
 
-    public function createSortieAchat($idAchat, $montant, $dateTransaction) {
-        $sql = "INSERT INTO BNGRC_transactions_argent (type_transaction, montant, id_don, id_achat, date_transaction)
-                VALUES ('SORTIE_ACHAT', :montant, NULL, :id_achat, :date_transaction)";
+    public function createSortieAchat($idAchat, $montant, $dateTransaction, $idMode = 1) {
+        $sql = "INSERT INTO BNGRC_transactions_argent (type_transaction, montant, id_don, id_achat, date_transaction, id_mode)
+                VALUES ('SORTIE_ACHAT', :montant, NULL, :id_achat, :date_transaction, :id_mode)";
 
         $this->db->runQuery($sql, [
             'montant' => $montant,
             'id_achat' => $idAchat,
             'date_transaction' => $dateTransaction,
+            'id_mode' => $idMode,
         ]);
 
         return $this->db->lastInsertId();

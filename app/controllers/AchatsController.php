@@ -218,15 +218,21 @@ class AchatsController {
             }
 
             $now = date('Y-m-d H:i:s');
+            
+            // Récupérer le mode (1 = origine par défaut, 2 = teste)
+            $idMode = isset($data['id_mode']) ? (int) $data['id_mode'] : 1;
+            if ($idMode < 1 || $idMode > 2) {
+                $idMode = 1;
+            }
 
-            $achatCreate = $this->achatsModel->create($idVille, $idArticle, $quantiteAchetee, $tauxFraisPourcent, $now);
+            $achatCreate = $this->achatsModel->create($idVille, $idArticle, $quantiteAchetee, $tauxFraisPourcent, $now, $idMode);
             $idAchat = (int) $achatCreate['id_achat'];
 
-            $this->transactionsModel->createSortieAchat($idAchat, $achatCreate['montants']['montant_ttc'], $now);
+            $this->transactionsModel->createSortieAchat($idAchat, $achatCreate['montants']['montant_ttc'], $now, $idMode);
 
-            $idDon = $this->donsModel->create($idArticle, $quantiteAchetee, $now);
+            $idDon = $this->donsModel->create($idArticle, $quantiteAchetee, $now, $idMode);
 
-            $this->distributionsModel->create((int) $idDon, (int) $idVille, (float) $quantiteAchetee, $now);
+            $this->distributionsModel->create((int) $idDon, (int) $idVille, (float) $quantiteAchetee, $now, $idMode);
 
             $dispatchResult = [
                 'distributions_creees' => 1,
@@ -250,12 +256,14 @@ class AchatsController {
                         'quantite_achetee' => $quantiteAchetee,
                         'taux_frais_pourcent' => $tauxFraisPourcent,
                         'montants' => $achatCreate['montants'],
+                        'id_mode' => $idMode,
                     ],
                     'don_cree' => [
                         'id_don' => (int) $idDon,
                         'id_article' => $idArticle,
                         'quantite_donnee' => $quantiteAchetee,
                         'date_reception' => $now,
+                        'id_mode' => $idMode,
                     ],
                     'dispatch' => $dispatchResult,
                 ]

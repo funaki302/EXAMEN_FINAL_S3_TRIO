@@ -16,45 +16,6 @@ class BesoinsVillesController {
         $this->villesModel = new Villes();
         $this->articlesModel = new Articles();
     }
-
-    public function index() {
-        try {
-            $besoins = $this->besoinsModel->getAll();
-            Flight::json([
-                'success' => true,
-                'data' => $besoins,
-                'count' => count($besoins)
-            ]);
-        } catch (\Exception $e) {
-            Flight::json([
-                'success' => false,
-                'message' => 'Erreur lors de la récupération des besoins: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function show($id_besoin) {
-        try {
-            $besoin = $this->besoinsModel->getById($id_besoin);
-            if (!$besoin) {
-                Flight::json([
-                    'success' => false,
-                    'message' => 'Besoin non trouvé'
-                ], 404);
-                return;
-            }
-
-            Flight::json([
-                'success' => true,
-                'data' => $besoin
-            ]);
-        } catch (\Exception $e) {
-            Flight::json([
-                'success' => false,
-                'message' => 'Erreur lors de la récupération du besoin: ' . $e->getMessage()
-            ], 500);
-        }
-    }
     
     public function getAll() {
         return $this->besoinsModel->getAll();
@@ -130,7 +91,13 @@ class BesoinsVillesController {
                 return;
             }
             
-            $id_besoin = $this->besoinsModel->create($data['id_ville'], $data['id_article'], $quantite_demandee);
+            // Récupérer le mode (1 = origine par défaut, 2 = teste)
+            $id_mode = isset($data['id_mode']) ? intval($data['id_mode']) : 1;
+            if ($id_mode < 1 || $id_mode > 2) {
+                $id_mode = 1;
+            }
+            
+            $id_besoin = $this->besoinsModel->create($data['id_ville'], $data['id_article'], $quantite_demandee, $id_mode);
             
             Flight::json([
                 'success' => true,

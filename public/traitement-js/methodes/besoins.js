@@ -7,8 +7,11 @@ window.addEventListener('load', async function () {
       const villes = await getAllVilles();
       console.log('Villes récupérées:', villes);
       
-      loadFormBesoin(villes, articles);
-      loadFormDon(articles);
+      const modes = await getAllModes();
+      console.log('Modes récupérés:', modes);
+      
+      loadFormBesoin(villes, articles, modes);
+      loadFormDon(articles, modes);
       showForm('besoin');
 
       document.querySelector('#btn-form-besoin').addEventListener('click', function() {
@@ -23,7 +26,7 @@ window.addEventListener('load', async function () {
     }
 });
 
-function loadFormBesoin(villes, articles){
+function loadFormBesoin(villes, articles, modes){
     const div = document.querySelector('#form-besoin');
     
     if (!div) {
@@ -53,16 +56,22 @@ function loadFormBesoin(villes, articles){
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="ville" class="form-label">Ville</label>
                 <select class="form-select" id="ville" required>
                     <option value="">Sélectionner une ville</option>
                 </select>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="article" class="form-label">Article</label>
                 <select class="form-select" id="article" required>
                     <option value="">Sélectionner un article</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="mode" class="form-label">Mode</label>
+                <select class="form-select" id="mode" required>
+                    <option value="">Sélectionner un mode</option>
                 </select>
             </div>
         </div>
@@ -97,6 +106,24 @@ function loadFormBesoin(villes, articles){
         articleSelect.appendChild(option);
     });
     
+    // Remplir le select des modes
+    const modeSelect = form.querySelector('#mode');
+    if (modes && modes.data) {
+        modes.data.forEach(mode => {
+            const option = document.createElement('option');
+            option.value = mode.id_mode;
+            option.textContent = mode.nom_mode.charAt(0).toUpperCase() + mode.nom_mode.slice(1);
+            if (mode.description) {
+                option.title = mode.description;
+            }
+            // Par défaut, sélectionner "teste" (id_mode = 2)
+            if (parseInt(mode.id_mode) === 2) {
+                option.selected = true;
+            }
+            modeSelect.appendChild(option);
+        });
+    }
+    
     // Gérer la soumission du formulaire
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -107,9 +134,10 @@ function loadFormBesoin(villes, articles){
         const villeId = form.querySelector('#ville').value;
         const articleId = form.querySelector('#article').value;
         const quantite = form.querySelector('#quantite').value;
+        const modeId = form.querySelector('#mode').value;
         
         // Validation
-        if (!villeId || !articleId || !quantite) {
+        if (!villeId || !articleId || !quantite || !modeId) {
             messageDiv.innerHTML = '<div class="alert alert-warning">Veuillez remplir tous les champs</div>';
             return;
         }
@@ -128,7 +156,8 @@ function loadFormBesoin(villes, articles){
             const data = {
                 id_ville: parseInt(villeId),
                 id_article: parseInt(articleId),
-                quantite_demandee: parseFloat(quantite)
+                quantite_demandee: parseFloat(quantite),
+                id_mode: parseInt(modeId)
             };
             
             const result = await createBesoin(data);
@@ -155,7 +184,7 @@ function loadFormBesoin(villes, articles){
     div.appendChild(form);
 }
 
-function loadFormDon(articles){
+function loadFormDon(articles, modes){
     const div = document.querySelector('#form-don');
 
     if (!div) {
@@ -179,19 +208,25 @@ function loadFormDon(articles){
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="don-article" class="form-label">Article</label>
                 <select class="form-select" id="don-article" required>
                     <option value="">Sélectionner un article</option>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="don-quantite" class="form-label">Quantité donnée</label>
                 <input type="number" class="form-control" id="don-quantite" min="0.01" step="0.01" required placeholder="Entrez la quantité">
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="don-date" class="form-label">Date de réception</label>
                 <input type="date" class="form-control" id="don-date" required>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="don-mode" class="form-label">Mode</label>
+                <select class="form-select" id="don-mode" required>
+                    <option value="">Sélectionner un mode</option>
+                </select>
             </div>
         </div>
         <div class="row">
@@ -213,6 +248,24 @@ function loadFormDon(articles){
         articleSelect.appendChild(option);
     });
 
+    // Remplir le select des modes
+    const modeSelect = form.querySelector('#don-mode');
+    if (modes && modes.data) {
+        modes.data.forEach(mode => {
+            const option = document.createElement('option');
+            option.value = mode.id_mode;
+            option.textContent = mode.nom_mode.charAt(0).toUpperCase() + mode.nom_mode.slice(1);
+            if (mode.description) {
+                option.title = mode.description;
+            }
+            // Par défaut, sélectionner "teste" (id_mode = 2)
+            if (parseInt(mode.id_mode) === 2) {
+                option.selected = true;
+            }
+            modeSelect.appendChild(option);
+        });
+    }
+
     // Date par défaut = aujourd'hui
     const today = new Date().toISOString().split('T')[0];
     form.querySelector('#don-date').value = today;
@@ -227,9 +280,10 @@ function loadFormDon(articles){
         const articleId = form.querySelector('#don-article').value;
         const quantite = form.querySelector('#don-quantite').value;
         const dateReception = form.querySelector('#don-date').value;
+        const modeId = form.querySelector('#don-mode').value;
 
         // Validation
-        if (!articleId || !quantite || !dateReception) {
+        if (!articleId || !quantite || !dateReception || !modeId) {
             messageDiv.innerHTML = '<div class="alert alert-warning">Veuillez remplir tous les champs</div>';
             return;
         }
@@ -247,7 +301,8 @@ function loadFormDon(articles){
             const data = {
                 id_article: parseInt(articleId),
                 quantite_donnee: parseFloat(quantite),
-                date_reception: dateReception
+                date_reception: dateReception,
+                id_mode: parseInt(modeId)
             };
 
             const result = await createDon(data);
@@ -256,6 +311,8 @@ function loadFormDon(articles){
                 messageDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Don enregistré avec succès!</div>';
                 form.reset();
                 form.querySelector('#don-date').value = today;
+                // Remettre le mode par défaut sur "teste"
+                form.querySelector('#don-mode').value = '2';
             } else {
                 messageDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i>Erreur: ${result.message}</div>`;
             }

@@ -42,6 +42,7 @@
   </script>
     <script src="<?= BASE_URL ?>/traitement-js/methodes/met_villes.js"></script>
     <script src="<?= BASE_URL ?>/traitement-js/methodes/met_articles.js"></script>
+    <script src="<?= BASE_URL ?>/traitement-js/methodes/met_modes.js"></script>
     <script src="<?= BASE_URL ?>/traitement-js/methodes/met_besoins.js"></script>
     <script src="<?= BASE_URL ?>/traitement-js/methodes/met_dons.js"></script>
     <script src="<?= BASE_URL ?>/traitement-js/methodes/besoins.js"></script>

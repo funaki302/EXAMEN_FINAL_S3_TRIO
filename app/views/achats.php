@@ -56,6 +56,14 @@
                 <input id="input-frais" type="number" step="0.01" min="0" class="form-control" placeholder="Ex: 5" />
               </div>
 
+              <div class="mb-3">
+                <label class="form-label">Mode</label>
+                <select id="input-mode" class="form-select">
+                  <option value="2" selected>Teste</option>
+                  <option value="1">Origine</option>
+                </select>
+              </div>
+
               <div class="border border-radius-md p-3 bg-gray-100">
                 <div class="text-sm text-dark" id="modal-achat-result">Renseigne quantité + frais puis clique Simuler.</div>
               </div>

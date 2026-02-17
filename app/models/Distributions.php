@@ -30,23 +30,25 @@ class Distributions {
         return $this->db->fetchRow($sql, ['id_distribution' => $id_distribution]);
     }
 
-    public function create($id_don, $id_ville, $quantite_attribuee, $date_attribution = null) {
+    public function create($id_don, $id_ville, $quantite_attribuee, $date_attribution = null, $id_mode = 1) {
         if ($date_attribution) {
-            $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee, date_attribution)
-                    VALUES (:id_don, :id_ville, :quantite_attribuee, :date_attribution)";
+            $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee, date_attribution, id_mode)
+                    VALUES (:id_don, :id_ville, :quantite_attribuee, :date_attribution, :id_mode)";
             $this->db->runQuery($sql, [
                 'id_don' => $id_don,
                 'id_ville' => $id_ville,
                 'quantite_attribuee' => $quantite_attribuee,
-                'date_attribution' => $date_attribution
+                'date_attribution' => $date_attribution,
+                'id_mode' => $id_mode
             ]);
         } else {
-            $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee)
-                    VALUES (:id_don, :id_ville, :quantite_attribuee)";
+            $sql = "INSERT INTO BNGRC_distributions (id_don, id_ville, quantite_attribuee, id_mode)
+                    VALUES (:id_don, :id_ville, :quantite_attribuee, :id_mode)";
             $this->db->runQuery($sql, [
                 'id_don' => $id_don,
                 'id_ville' => $id_ville,
-                'quantite_attribuee' => $quantite_attribuee
+                'quantite_attribuee' => $quantite_attribuee,
+                'id_mode' => $id_mode
             ]);
         }
 
