@@ -5,18 +5,18 @@
       <!-- Cards statistiques -->
       <div class="row mb-4">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
+          <div class="card h-100">
             <div class="card-body p-3">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Besoins</p>
-                    <h5 class="font-weight-bolder" id="stat-total-besoins">0</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-secondary">Total Besoins</p>
+                    <h4 class="font-weight-bolder mb-0 mt-2" id="stat-total-besoins">0</h4>
                   </div>
                 </div>
                 <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 48px; height: 48px;">
+                    <i class="fas fa-clipboard-list text-lg opacity-10" style="line-height: 48px;" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
@@ -24,18 +24,18 @@
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
+          <div class="card h-100">
             <div class="card-body p-3">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Quantité Totale</p>
-                    <h5 class="font-weight-bolder" id="stat-quantite-totale">0</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-secondary">Quantité Totale</p>
+                    <h4 class="font-weight-bolder mb-0 mt-2" id="stat-quantite-totale">0</h4>
                   </div>
                 </div>
                 <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle" style="width: 48px; height: 48px;">
+                    <i class="fas fa-boxes text-lg opacity-10" style="line-height: 48px;" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
@@ -43,37 +43,37 @@
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
+          <div class="card h-100">
             <div class="card-body p-3">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Villes concernées</p>
-                    <h5 class="font-weight-bolder" id="stat-villes">0</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-secondary">Villes concernées</p>
+                    <h4 class="font-weight-bolder mb-0 mt-2" id="stat-villes">0</h4>
                   </div>
                 </div>
                 <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle" style="width: 48px; height: 48px;">
+                    <i class="fas fa-city text-lg opacity-10" style="line-height: 48px;" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
-          <div class="card">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card h-100">
             <div class="card-body p-3">
-              <div class="row">
+              <div class="row align-items-center">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Valeur Totale</p>
-                    <h5 class="font-weight-bolder" id="stat-valeur-totale">0 Ar</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-secondary">Valeur Totale</p>
+                    <h4 class="font-weight-bolder mb-0 mt-2" id="stat-valeur-totale">0 Ar</h4>
                   </div>
                 </div>
                 <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                  <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle" style="width: 48px; height: 48px;">
+                    <i class="fas fa-coins text-lg opacity-10" style="line-height: 48px;" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
