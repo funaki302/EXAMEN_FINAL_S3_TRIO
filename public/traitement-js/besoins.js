@@ -84,11 +84,15 @@ function loadFormBesoin(villes, articles, modes){
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="quantite" class="form-label">Quantité demandée</label>
                 <input type="number" class="form-control" id="quantite" min="0.01" step="0.01" required placeholder="Entrez la quantité">
             </div>
-            <div class="col-md-6 mb-3 d-flex align-items-end">
+            <div class="col-md-4 mb-3">
+                <label for="date_saisie" class="form-label">Date de saisie</label>
+                <input type="date" class="form-control" id="date_saisie">
+            </div>
+            <div class="col-md-4 mb-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
                     <i class="fas fa-plus me-2"></i>Valider
                 </button>
@@ -143,6 +147,7 @@ function loadFormBesoin(villes, articles, modes){
         const articleId = form.querySelector('#article').value;
         const quantite = form.querySelector('#quantite').value;
         const modeId = form.querySelector('#mode').value;
+        const dateSaisie = form.querySelector('#date_saisie').value;
         
         // Validation
         if (!villeId || !articleId || !quantite || !modeId) {
@@ -165,7 +170,8 @@ function loadFormBesoin(villes, articles, modes){
                 id_ville: parseInt(villeId),
                 id_article: parseInt(articleId),
                 quantite_demandee: parseFloat(quantite),
-                id_mode: parseInt(modeId)
+                id_mode: parseInt(modeId),
+                date_saisie: dateSaisie || null
             };
             
             const result = await createBesoin(data);

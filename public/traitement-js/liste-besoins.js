@@ -91,6 +91,10 @@ function loadListeBesoins(besoins) {
                 existingEditRow.remove();
             }
 
+            // Préparer la date au format YYYY-MM-DD pour l'input date
+            const dateSaisieValue = besoin.date_saisie ? besoin.date_saisie.split(' ')[0] : '';
+            const currentMode = besoin.id_mode || 1;
+
             // formulaire de modification
             const parentTR = this.closest('tr');
             const editRow = document.createElement('tr');
@@ -99,12 +103,25 @@ function loadListeBesoins(besoins) {
             editRow.innerHTML = `
                 <td colspan="8" class="bg-gray-100">
                     <form class="d-flex align-items-center justify-content-between p-3">
-                        <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
                             <div>
                                 <label class="form-label text-xs mb-0">Quantité demandée</label>
                                 <input type="number" name="quantite_demandee"
                                 class="form-control form-control-sm" value="${besoin.quantite_demandee}" 
-                                min="1" style="width: 150px;">
+                                min="1" style="width: 120px;">
+                            </div>
+                            <div>
+                                <label class="form-label text-xs mb-0">Date de saisie</label>
+                                <input type="date" name="date_saisie"
+                                class="form-control form-control-sm" value="${dateSaisieValue}" 
+                                style="width: 150px;">
+                            </div>
+                            <div>
+                                <label class="form-label text-xs mb-0">Mode</label>
+                                <select name="id_mode" class="form-select form-select-sm" style="width: 130px;">
+                                    <option value="1" ${currentMode == 1 ? 'selected' : ''}>Origine</option>
+                                    <option value="2" ${currentMode == 2 ? 'selected' : ''}>Teste</option>
+                                </select>
                             </div>
                             <input type="hidden" name="id_besoin" value="${besoin.id_besoin}">
                             <input type="hidden" name="id_article" value="${besoin.id_article}">
@@ -135,7 +152,9 @@ function loadListeBesoins(besoins) {
                         id_besoin: formData.get('id_besoin'),
                         id_article: formData.get('id_article'),
                         id_ville: formData.get('id_ville'),
-                        quantite_demandee: formData.get('quantite_demandee')
+                        quantite_demandee: formData.get('quantite_demandee'),
+                        date_saisie: formData.get('date_saisie'),
+                        id_mode: formData.get('id_mode')
                     };
                     const result = await updateBesoin(data);
 

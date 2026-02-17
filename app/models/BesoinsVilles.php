@@ -63,29 +63,54 @@ class BesoinsVilles {
     /**
      * Ajouter un nouveau besoin
      * @param int $id_mode - 1 = origine, 2 = teste (par défaut: 1)
+     * @param string|null $date_saisie - Date de saisie (optionnel, utilise NOW() par défaut)
      */
-    public function create($id_ville, $id_article, $quantite_demandee, $id_mode = 1) {
-        $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee, id_mode) VALUES (:id_ville, :id_article, :quantite_demandee, :id_mode)";
-        $this->db->runQuery($sql, [
+    public function create($id_ville, $id_article, $quantite_demandee, $id_mode = 1, $date_saisie = null) {
+        $params = [
             'id_ville' => $id_ville,
             'id_article' => $id_article,
             'quantite_demandee' => $quantite_demandee,
             'id_mode' => $id_mode
-        ]);
+        ];
+        
+        if ($date_saisie !== null && $date_saisie !== '') {
+            $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee, id_mode, date_saisie) VALUES (:id_ville, :id_article, :quantite_demandee, :id_mode, :date_saisie)";
+            $params['date_saisie'] = $date_saisie;
+        } else {
+            $sql = "INSERT INTO BNGRC_besoins_villes (id_ville, id_article, quantite_demandee, id_mode) VALUES (:id_ville, :id_article, :quantite_demandee, :id_mode)";
+        }
+        
+        $this->db->runQuery($sql, $params);
         return $this->db->lastInsertId();
     }
     
     /**
      * Mettre à jour un besoin
+     * @param int $id_mode - 1 = origine, 2 = teste
      */
-    public function update($id_besoin, $id_ville, $id_article, $quantite_demandee) {
-        $sql = "UPDATE BNGRC_besoins_villes SET id_ville = :id_ville, id_article = :id_article, quantite_demandee = :quantite_demandee WHERE id_besoin = :id_besoin";
-        return $this->db->runQuery($sql, [
+    public function update($id_besoin, $id_ville, $id_article, $quantite_demandee, $date_saisie = null, $id_mode = null) {
+        $params = [
             'id_besoin' => $id_besoin,
             'id_ville' => $id_ville,
             'id_article' => $id_article,
             'quantite_demandee' => $quantite_demandee
-        ]);
+        ];
+        
+        $sql = "UPDATE BNGRC_besoins_villes SET id_ville = :id_ville, id_article = :id_article, quantite_demandee = :quantite_demandee";
+        
+        if ($date_saisie !== null) {
+            $sql .= ", date_saisie = :date_saisie";
+            $params['date_saisie'] = $date_saisie;
+        }
+        
+        if ($id_mode !== null) {
+            $sql .= ", id_mode = :id_mode";
+            $params['id_mode'] = $id_mode;
+        }
+        
+        $sql .= " WHERE id_besoin = :id_besoin";
+        
+        return $this->db->runQuery($sql, $params);
     }
     
     /**

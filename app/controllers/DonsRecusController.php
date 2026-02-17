@@ -192,7 +192,20 @@ class DonsRecusController {
                 return;
             }
             
-            $this->donsModel->update($id_don, $data['id_article'], $quantite_donnee, $date_reception);
+            // Récupérer id_mode si fourni (1 = origine, 2 = teste)
+            $id_mode = null;
+            if (isset($data['id_mode']) && $data['id_mode'] !== '') {
+                $id_mode = intval($data['id_mode']);
+                if ($id_mode < 1 || $id_mode > 2) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Mode invalide (1 = origine, 2 = teste)'
+                    ], 400);
+                    return;
+                }
+            }
+            
+            $this->donsModel->update($id_don, $data['id_article'], $quantite_donnee, $date_reception, $id_mode);
             
             Flight::json([
                 'success' => true,
@@ -201,7 +214,8 @@ class DonsRecusController {
                     'id_don' => $id_don,
                     'id_article' => $data['id_article'],
                     'quantite_donnee' => $quantite_donnee,
-                    'date_reception' => $date_reception
+                    'date_reception' => $date_reception,
+                    'id_mode' => $id_mode
                 ]
             ]);
         } catch (\Exception $e) {

@@ -97,7 +97,17 @@ class BesoinsVillesController {
                 $id_mode = 1;
             }
             
-            $id_besoin = $this->besoinsModel->create($data['id_ville'], $data['id_article'], $quantite_demandee, $id_mode);
+            // Récupérer la date de saisie (optionnel)
+            $date_saisie = isset($data['date_saisie']) && !empty($data['date_saisie']) ? $data['date_saisie'] : null;
+            if ($date_saisie !== null && !strtotime($date_saisie)) {
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Format de date de saisie invalide'
+                ], 400);
+                return;
+            }
+            
+            $id_besoin = $this->besoinsModel->create($data['id_ville'], $data['id_article'], $quantite_demandee, $id_mode, $date_saisie);
             
             Flight::json([
                 'success' => true,
@@ -106,7 +116,8 @@ class BesoinsVillesController {
                     'id_besoin' => $id_besoin,
                     'id_ville' => $data['id_ville'],
                     'id_article' => $data['id_article'],
-                    'quantite_demandee' => $quantite_demandee
+                    'quantite_demandee' => $quantite_demandee,
+                    'date_saisie' => $date_saisie
                 ]
             ], 201);
         } catch (Exception $e) {
@@ -162,7 +173,33 @@ class BesoinsVillesController {
                 return;
             }
             
-            $this->besoinsModel->update($id_besoin, $data['id_ville'], $data['id_article'], $quantite_demandee);
+            // Récupérer date_saisie si fournie
+            $date_saisie = null;
+            if (!empty($data['date_saisie'])) {
+                $date_saisie = $data['date_saisie'];
+                if (!strtotime($date_saisie)) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Format de date invalide'
+                    ], 400);
+                    return;
+                }
+            }
+            
+            // Récupérer id_mode si fourni (1 = origine, 2 = teste)
+            $id_mode = null;
+            if (isset($data['id_mode']) && $data['id_mode'] !== '') {
+                $id_mode = intval($data['id_mode']);
+                if ($id_mode < 1 || $id_mode > 2) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Mode invalide (1 = origine, 2 = teste)'
+                    ], 400);
+                    return;
+                }
+            }
+            
+            $this->besoinsModel->update($id_besoin, $data['id_ville'], $data['id_article'], $quantite_demandee, $date_saisie, $id_mode);
             
             Flight::json([
                 'success' => true,
@@ -171,7 +208,9 @@ class BesoinsVillesController {
                     'id_besoin' => $id_besoin,
                     'id_ville' => $data['id_ville'],
                     'id_article' => $data['id_article'],
-                    'quantite_demandee' => $quantite_demandee
+                    'quantite_demandee' => $quantite_demandee,
+                    'date_saisie' => $date_saisie,
+                    'id_mode' => $id_mode
                 ]
             ]);
         } catch (Exception $e) {

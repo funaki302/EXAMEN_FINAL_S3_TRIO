@@ -82,15 +82,26 @@ class DonsRecus {
     
     /**
      * Mettre à jour un don
+     * @param int $id_mode - 1 = origine, 2 = teste (optionnel)
      */
-    public function update($id_don, $id_article, $quantite_donnee, $date_reception) {
-        $sql = "UPDATE BNGRC_dons_recus SET id_article = :id_article, quantite_donnee = :quantite_donnee, date_reception = :date_reception WHERE id_don = :id_don";
-        return $this->db->runQuery($sql, [
+    public function update($id_don, $id_article, $quantite_donnee, $date_reception, $id_mode = null) {
+        $params = [
             'id_don' => $id_don,
             'id_article' => $id_article,
             'quantite_donnee' => $quantite_donnee,
             'date_reception' => $date_reception
-        ]);
+        ];
+        
+        $sql = "UPDATE BNGRC_dons_recus SET id_article = :id_article, quantite_donnee = :quantite_donnee, date_reception = :date_reception";
+        
+        if ($id_mode !== null) {
+            $sql .= ", id_mode = :id_mode";
+            $params['id_mode'] = $id_mode;
+        }
+        
+        $sql .= " WHERE id_don = :id_don";
+        
+        return $this->db->runQuery($sql, $params);
     }
     
     /**

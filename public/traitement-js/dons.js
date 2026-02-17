@@ -202,22 +202,31 @@ function loadListeDonsSaisi(listeDonSaisi) {
             const parentTR = this.closest('tr');
             const editRow = document.createElement('tr');
             editRow.classList.add('edit-row');
+            
+            const currentMode = don.id_mode || 1;
 
             editRow.innerHTML = `
                 <td colspan="6" class="bg-gray-100">
                     <form class="d-flex align-items-center justify-content-between p-3">
-                        <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
                             <div>
                                 <label class="form-label text-xs mb-0">Quantité donnée</label>
                                 <input type="number" name="quantite_donnee"
                                 class="form-control form-control-sm" value="${don.quantite_donnee}" 
-                                min="1" style="width: 150px;">
+                                min="1" style="width: 120px;">
                             </div>
                             <div>
                                 <label class="form-label text-xs mb-0">Date réception</label>
                                 <input type="date" name="date_reception"
                                 class="form-control form-control-sm" value="${don.date_reception ? don.date_reception.split(' ')[0] : ''}" 
                                 style="width: 150px;">
+                            </div>
+                            <div>
+                                <label class="form-label text-xs mb-0">Mode</label>
+                                <select name="id_mode" class="form-select form-select-sm" style="width: 130px;">
+                                    <option value="1" ${currentMode == 1 ? 'selected' : ''}>Origine</option>
+                                    <option value="2" ${currentMode == 2 ? 'selected' : ''}>Teste</option>
+                                </select>
                             </div>
                             <input type="hidden" name="id_don" value="${don.id_don}">
                             <input type="hidden" name="id_article" value="${don.id_article}">
@@ -247,7 +256,8 @@ function loadListeDonsSaisi(listeDonSaisi) {
                         id_don: formData.get('id_don'),
                         id_article: formData.get('id_article'),
                         quantite_donnee: formData.get('quantite_donnee'),
-                        date_reception: formData.get('date_reception')
+                        date_reception: formData.get('date_reception'),
+                        id_mode: formData.get('id_mode')
                     };
                     
                     const result = await updateDon(data);
