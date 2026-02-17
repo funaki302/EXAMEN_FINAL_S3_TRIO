@@ -182,7 +182,7 @@ function loadListeDonsSaisi(listeDonSaisi) {
             </td>
             <td class="text-center">
                 <button class="btn btn-sm btn-outline-warning btn-edit-don mb-0" title="Modifier">
-                    <i class="fas fa-edit"></i>
+                    Modifier
                 </button>
             </td>
         `;
