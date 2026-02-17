@@ -69,18 +69,89 @@ class Dispatch {
             $donIndex = 0;
             $resteDonCourant = (float) ($donsQueue[0]['reste_don'] ?? 0);
 
+            $needsEligibles = [];
+            $sumBesoins = 0.0;
             foreach ($needs as $need) {
                 $resteBesoin = (float) ($need['reste_besoin'] ?? 0);
                 if ($resteBesoin <= 0) {
                     continue;
                 }
+                $needsEligibles[] = $need;
+                $sumBesoins += $resteBesoin;
+            }
 
-                $quota = (int) floor($resteBesoin / $totalDonReste);
-                if ($quota <= 0) {
+            if ($sumBesoins <= 0) {
+                continue;
+            }
+
+            $allocParBesoin = [];
+            $remainders = [];
+            $totalBase = 0.0;
+
+            foreach ($needsEligibles as $need) {
+                $resteBesoin = (float) ($need['reste_besoin'] ?? 0);
+                $raw = ($resteBesoin * $totalDonReste) / $sumBesoins;
+                $base = (float) floor($raw + 1e-9);
+                $base = min($base, $resteBesoin);
+                $fraction = $raw - $base;
+                if ($fraction < 0) {
+                    $fraction = 0.0;
+                }
+
+                $idBesoin = (int) ($need['id_besoin'] ?? 0);
+                $allocParBesoin[$idBesoin] = $base;
+                $totalBase += $base;
+                $remainders[] = [
+                    'id_besoin' => $idBesoin,
+                    'fraction' => $fraction,
+                    'reste_besoin' => $resteBesoin,
+                    'date_saisie' => (string) ($need['date_saisie'] ?? '1970-01-01 00:00:00'),
+                ];
+            }
+
+            $resteARepartir = (int) floor(max(0.0, $totalDonReste - $totalBase) + 1e-9);
+
+            usort($remainders, function($a, $b) {
+                if ($a['fraction'] === $b['fraction']) {
+                    $da = strtotime($a['date_saisie']);
+                    $db = strtotime($b['date_saisie']);
+                    if ($da === $db) {
+                        return ((int) $a['id_besoin']) <=> ((int) $b['id_besoin']);
+                    }
+                    return $da <=> $db;
+                }
+                return ($a['fraction'] < $b['fraction']) ? 1 : -1;
+            });
+
+            while ($resteARepartir > 0) {
+                $gaveAny = false;
+                foreach ($remainders as $r) {
+                    if ($resteARepartir <= 0) {
+                        break;
+                    }
+
+                    $idBesoin = (int) $r['id_besoin'];
+                    $current = (float) ($allocParBesoin[$idBesoin] ?? 0.0);
+                    $cap = (float) ($r['reste_besoin'] ?? 0.0);
+                    if ($current + 1.0 <= $cap + 1e-9) {
+                        $allocParBesoin[$idBesoin] = $current + 1.0;
+                        $resteARepartir--;
+                        $gaveAny = true;
+                    }
+                }
+
+                if ($gaveAny === false) {
+                    break;
+                }
+            }
+
+            foreach ($needsEligibles as $need) {
+                $idBesoin = (int) ($need['id_besoin'] ?? 0);
+                $aDistribuer = (float) ($allocParBesoin[$idBesoin] ?? 0.0);
+                if ($aDistribuer <= 0) {
                     continue;
                 }
 
-                $aDistribuer = min($resteBesoin, (float) $quota);
                 while ($aDistribuer > 0 && $donIndex < count($donsQueue)) {
                     if ($resteDonCourant <= 0) {
                         $donIndex++;

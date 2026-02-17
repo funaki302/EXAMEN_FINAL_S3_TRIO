@@ -8,6 +8,174 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function formatDateTime(value) {
+  if (!value) return '-';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return escapeHtml(value);
+  return d.toLocaleString('fr-FR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function clampPercent(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, n));
+}
+
+function renderBesoinsParArticle(rows) {
+  const targetEl = document.getElementById('dispatch-besoins-par-article');
+  if (!targetEl) return;
+
+  const list = Array.isArray(rows) ? rows : [];
+  if (list.length === 0) {
+    targetEl.innerHTML = `
+      <div class="col-12">
+        <div class="text-sm text-secondary">Aucun besoin à afficher.</div>
+      </div>
+    `;
+    return;
+  }
+
+  const groups = new Map();
+  list.forEach((r) => {
+    const idArticle = Number(r.id_article || 0) || 0;
+    if (!groups.has(idArticle)) {
+      groups.set(idArticle, {
+        id_article: idArticle,
+        nom_article: r.nom_article,
+        categorie: r.categorie,
+        rows: [],
+      });
+    }
+    groups.get(idArticle).rows.push(r);
+  });
+
+  const articles = Array.from(groups.values());
+  articles.sort((a, b) => {
+    const ca = String(a.categorie || '');
+    const cb = String(b.categorie || '');
+    if (ca !== cb) return ca.localeCompare(cb, 'fr');
+    return String(a.nom_article || '').localeCompare(String(b.nom_article || ''), 'fr');
+  });
+
+  const html = articles
+    .map((g) => {
+      const nomArticle = escapeHtml(g.nom_article);
+      const categorie = escapeHtml(g.categorie);
+      const gradient = getCategorieGradient(g.categorie);
+
+      let totalBesoin = 0;
+      let totalAttrib = 0;
+      let totalReste = 0;
+      g.rows.forEach((r) => {
+        totalBesoin += Number(r.besoin_total || 0) || 0;
+        totalAttrib += Number(r.attribue_total || 0) || 0;
+        totalReste += Number(r.reste_a_combler || 0) || 0;
+      });
+
+      const pct = totalBesoin > 0 ? clampPercent((totalAttrib / totalBesoin) * 100) : 0;
+
+      const innerRows = (g.rows || [])
+        .slice()
+        .sort((a, b) => {
+          const da = new Date(a.date_premier_besoin || a.date_saisie || 0).getTime();
+          const db = new Date(b.date_premier_besoin || b.date_saisie || 0).getTime();
+          if (da === db) {
+            return (Number(a.id_ville || 0) || 0) - (Number(b.id_ville || 0) || 0);
+          }
+          return da - db;
+        })
+        .map((r) => {
+          const ville = escapeHtml(r.nom_ville);
+          const region = escapeHtml(r.region);
+          const dt = formatDateTime(r.date_premier_besoin);
+          const besoin = Number(r.besoin_total || 0) || 0;
+          const attrib = Number(r.attribue_total || 0) || 0;
+          const reste = Number(r.reste_a_combler || 0) || 0;
+          const p = besoin > 0 ? clampPercent((attrib / besoin) * 100) : 0;
+          const ok = reste <= 0;
+
+          return `
+            <div class="d-flex align-items-center justify-content-between py-2" style="border-bottom: 1px solid rgba(0,0,0,0.05); gap: 12px;">
+              <div style="min-width: 0;">
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                  <span class="badge ${ok ? 'bg-gradient-success' : 'bg-gradient-dark'}" style="min-width: 24px;">${ok ? 'OK' : '...'}</span>
+                  <div style="min-width:0;">
+                    <h6 class="mb-0 text-sm" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${ville}</h6>
+                    <p class="text-xs text-secondary mb-0" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${region} · ${dt}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-end" style="flex: 0 0 auto; min-width: 190px;">
+                <div class="d-flex justify-content-end" style="gap: 10px;">
+                  <div>
+                    <p class="text-xs text-secondary mb-0">Besoin</p>
+                    <p class="text-sm font-weight-bold mb-0">${formatNumber(besoin)}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs text-secondary mb-0">Attribué</p>
+                    <p class="text-sm font-weight-bold mb-0">${formatNumber(attrib)}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs text-secondary mb-0">Reste</p>
+                    <p class="text-sm font-weight-bold mb-0">${formatNumber(reste)}</p>
+                  </div>
+                </div>
+                <div class="progress progress-md mt-2" style="height: 6px;">
+                  <div class="progress-bar ${ok ? 'bg-gradient-success' : gradient}" role="progressbar" aria-valuenow="${p.toFixed(2)}" aria-valuemin="0" aria-valuemax="100" style="width: ${p.toFixed(2)}%"></div>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      return `
+        <div class="col-12 col-xl-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header pb-0 p-3">
+              <div class="d-flex align-items-start justify-content-between" style="gap: 12px;">
+                <div style="min-width: 0;">
+                  <h6 class="mb-0" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nomArticle}</h6>
+                  <p class="text-sm text-secondary mb-0">${categorie}</p>
+                </div>
+                <div class="text-end" style="flex: 0 0 auto;">
+                  <div class="icon icon-shape ${gradient} shadow text-center border-radius-md">
+                    <i class="ni ni-archive-2 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <div class="d-flex justify-content-between">
+                  <span class="text-xs text-secondary">Satisfaction globale</span>
+                  <span class="text-xs font-weight-bold">${pct.toFixed(2)}%</span>
+                </div>
+                <div class="progress progress-md" style="height: 6px;">
+                  <div class="progress-bar ${gradient}" role="progressbar" aria-valuenow="${pct.toFixed(2)}" aria-valuemin="0" aria-valuemax="100" style="width: ${pct.toFixed(2)}%"></div>
+                </div>
+                <p class="text-xs text-secondary mb-0 mt-2">Total besoin: <span class="font-weight-bold">${formatNumber(totalBesoin)}</span> · Attribué: <span class="font-weight-bold">${formatNumber(totalAttrib)}</span> · Restant: <span class="font-weight-bold">${formatNumber(totalReste)}</span></p>
+              </div>
+            </div>
+
+            <div class="card-body p-3" style="max-height: 360px; overflow: auto;">
+              ${innerRows}
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+
+  targetEl.innerHTML = html;
+}
+
 function getDispatchUiSelection() {
   const algoEl = document.getElementById('select-dispatch-algo');
   const actionEl = document.getElementById('select-dispatch-action');
@@ -89,6 +257,7 @@ async function executeDispatchFromUi() {
       if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
         renderSummaryTable(summaryEl, info.summary_rows);
         renderBesoinsStats(info.summary_rows);
+        renderBesoinsParArticle(info.summary_rows);
       }
     } else {
       await loadDispatchSummary();
@@ -134,6 +303,7 @@ async function runDispatchProportionnel() {
     if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
       renderSummaryTable(summaryEl, info.summary_rows);
       renderBesoinsStats(info.summary_rows);
+      renderBesoinsParArticle(info.summary_rows);
     }
   } catch (e) {
     statusEl.className = 'text-sm text-danger';
@@ -243,6 +413,7 @@ async function runDispatchSmallestNeeds() {
     if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
       renderSummaryTable(summaryEl, info.summary_rows);
       renderBesoinsStats(info.summary_rows);
+      renderBesoinsParArticle(info.summary_rows);
     }
   } catch (e) {
     statusEl.className = 'text-sm text-danger';
@@ -537,6 +708,7 @@ async function loadDispatchSummary() {
 
     renderSummaryTable(summaryEl, json.data);
     renderBesoinsStats(json.data);
+    renderBesoinsParArticle(json.data);
   } catch (e) {
     statusEl.className = 'text-sm text-danger';
     statusEl.textContent = 'Erreur réseau lors du chargement.';
