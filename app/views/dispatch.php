@@ -39,6 +39,22 @@
         </div>
       </div>
 
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <h6 class="mb-0">Besoins par article</h6>
+              </div>
+              <p class="text-sm text-secondary mb-0 mt-2">Vue synthétique et détaillée des besoins par article, par ville.</p>
+            </div>
+            <div class="card-body p-3">
+              <div id="dispatch-besoins-par-article" class="row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-12">
           <div class="card mb-4">

@@ -183,10 +183,10 @@
             <div class="card-footer pt-0 p-3 d-flex align-items-center">
               <div class="w-60">
                 <p class="text-sm mb-0">
-                  Total: <b id="dash-dons-total">0 Ar</b>
+                  Total: <b id="dash-dons-total">0</b>
                 </p>
                 <p class="text-xs text-secondary mb-0">
-                  Distribués: <span id="dash-dons-distribues">0 Ar</span> · En attente: <span id="dash-dons-attente">0 Ar</span>
+                  Distribués: <span id="dash-dons-distribues">0</span> · En attente: <span id="dash-dons-attente">0</span>
                 </p>
               </div>
               <div class="w-40 text-end">

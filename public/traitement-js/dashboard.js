@@ -8,10 +8,10 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
-function formatMoneyAriary(value) {
+function formatTotal(value) {
   const n = Number(value);
-  if (!Number.isFinite(n)) return '0 Ar';
-  return n.toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' Ar';
+  if (!Number.isFinite(n)) return '0';
+  return n.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
 }
 
 function clampPercent(value) {
@@ -73,9 +73,9 @@ async function loadDonsPourcentagesDashboard() {
     setBar(barAttente, pctAttente);
     setBar(barRestant, pctRestant);
 
-    if (elTotal) elTotal.textContent = formatMoneyAriary(d.valeur_totale || 0);
-    if (elDistribues) elDistribues.textContent = formatMoneyAriary(d.valeur_distribuee || 0);
-    if (elAttente) elAttente.textContent = formatMoneyAriary(d.valeur_en_attente || 0);
+    if (elTotal) elTotal.textContent = formatTotal(d.valeur_totale || 0);
+    if (elDistribues) elDistribues.textContent = formatTotal(d.valeur_distribuee || 0);
+    if (elAttente) elAttente.textContent = formatTotal(d.valeur_en_attente || 0);
   } catch (e) {
     setBar(barDistribue, 0);
     setBar(barAttente, 0);
