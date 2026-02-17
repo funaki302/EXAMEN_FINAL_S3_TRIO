@@ -143,14 +143,23 @@
           </a>
         </li>
 
-		<li class="nav-item">
-		  <a class="nav-link<?= ($active_page === 'achats' ? ' active' : '') ?>" href="<?= BASE_URL ?>/achats">
-			<div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-			  <img src="<?= BASE_URL ?>/assets/icons/dashbord-icon/exchange.svg" width="18" height="18" alt="Achats">
-			</div>
-			<span class="nav-link-text ms-1">Achats</span>
-		  </a>
-		</li>
+        <li class="nav-item">
+          <a class="nav-link<?= ($active_page === 'achats' ? ' active' : '') ?>" href="<?= BASE_URL ?>/achats">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="<?= BASE_URL ?>/assets/icons/dashbord-icon/exchange.svg" width="18" height="18" alt="Achats">
+          </div>
+          <span class="nav-link-text ms-1">Achats</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link<?= ($active_page === 'liste-besoins' ? ' active' : '') ?>" href="<?= BASE_URL ?>/liste-besoins">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="<?= BASE_URL ?>/assets/icons/dashbord-icon/exchange.svg" width="18" height="18" alt="Achats">
+          </div>
+          <span class="nav-link-text ms-1">Liste des besoins</span>
+          </a>
+        </li>
       
        <!--  <li class="nav-item mt-3">
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>

@@ -75,8 +75,8 @@ function loadListeBesoins(besoins) {
                 <p class="text-xs text-secondary mb-0">${dateFormatted}</p>
             </td>
             <td class="text-center">
-                <button class="btn btn-sm btn-outline-warning btn-edit-besoin mb-0" title="Modifier">
-                    <i class="fas fa-edit"></i>
+                <button class="btn btn-sm btn-outline-warning btn-edit-besoin mb-0" >
+                    Modifier
                 </button>
             </td>
         `;
