@@ -67,13 +67,15 @@ class DonsRecus {
     
     /**
      * Ajouter un nouveau don
+     * @param int $id_mode - 1 = origine, 2 = teste (par défaut: 1)
      */
-    public function create($id_article, $quantite_donnee, $date_reception) {
-        $sql = "INSERT INTO BNGRC_dons_recus (id_article, quantite_donnee, date_reception) VALUES (:id_article, :quantite_donnee, :date_reception)";
+    public function create($id_article, $quantite_donnee, $date_reception, $id_mode = 1) {
+        $sql = "INSERT INTO BNGRC_dons_recus (id_article, quantite_donnee, date_reception, id_mode) VALUES (:id_article, :quantite_donnee, :date_reception, :id_mode)";
         $this->db->runQuery($sql, [
             'id_article' => $id_article,
             'quantite_donnee' => $quantite_donnee,
-            'date_reception' => $date_reception
+            'date_reception' => $date_reception,
+            'id_mode' => $id_mode
         ]);
         return $this->db->lastInsertId();
     }

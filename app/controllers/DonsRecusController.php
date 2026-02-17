@@ -114,11 +114,17 @@ class DonsRecusController {
                 return;
             }
             
-            $id_don = $this->donsModel->create($data['id_article'], $quantite_donnee, $date_reception);
+            // Récupérer le mode (1 = origine par défaut, 2 = teste)
+            $id_mode = isset($data['id_mode']) ? intval($data['id_mode']) : 1;
+            if ($id_mode < 1 || $id_mode > 2) {
+                $id_mode = 1;
+            }
+            
+            $id_don = $this->donsModel->create($data['id_article'], $quantite_donnee, $date_reception, $id_mode);
 
             $article = $this->articlesModel->getById($data['id_article']);
             if (($article['categorie'] ?? '') === 'Argent') {
-                $this->transactionsModel->createEntreeDon($id_don, $quantite_donnee, $date_reception);
+                $this->transactionsModel->createEntreeDon($id_don, $quantite_donnee, $date_reception, $id_mode);
             }
             
             Flight::json([
@@ -128,7 +134,8 @@ class DonsRecusController {
                     'id_don' => $id_don,
                     'id_article' => $data['id_article'],
                     'quantite_donnee' => $quantite_donnee,
-                    'date_reception' => $date_reception
+                    'date_reception' => $date_reception,
+                    'id_mode' => $id_mode
                 ]
             ], 201);
         } catch (\Exception $e) {

@@ -129,13 +129,13 @@ class Achats {
         return $out;
     }
 
-    public function create($idVille, $idArticle, $quantiteAchetee, $tauxFraisPourcent, $dateAchat) {
+    public function create($idVille, $idArticle, $quantiteAchetee, $tauxFraisPourcent, $dateAchat, $idMode = 1) {
         $m = $this->computeMontants($idArticle, $quantiteAchetee, $tauxFraisPourcent);
 
         $sql = "INSERT INTO BNGRC_achats
-                    (id_ville, id_article, quantite_achetee, prix_unitaire, taux_frais_pourcent, montant_ht, montant_frais, montant_ttc, date_achat)
+                    (id_ville, id_article, quantite_achetee, prix_unitaire, taux_frais_pourcent, montant_ht, montant_frais, montant_ttc, date_achat, id_mode)
                 VALUES
-                    (:id_ville, :id_article, :quantite_achetee, :prix_unitaire, :taux_frais_pourcent, :montant_ht, :montant_frais, :montant_ttc, :date_achat)";
+                    (:id_ville, :id_article, :quantite_achetee, :prix_unitaire, :taux_frais_pourcent, :montant_ht, :montant_frais, :montant_ttc, :date_achat, :id_mode)";
 
         $this->db->runQuery($sql, [
             'id_ville' => $idVille,
@@ -147,6 +147,7 @@ class Achats {
             'montant_frais' => $m['montant_frais'],
             'montant_ttc' => $m['montant_ttc'],
             'date_achat' => $dateAchat,
+            'id_mode' => $idMode,
         ]);
 
         $idAchat = $this->db->lastInsertId();

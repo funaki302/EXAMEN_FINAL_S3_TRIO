@@ -29,7 +29,7 @@
   </title>
   <!-- CSS Files -->
   <link id="pagestyle" href="<?= BASE_URL ?>/assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
-  <style nonce="<?= $nonce ?>">
+  <style >
     .bngrc-navbar-transparent{
       background: transparent !important;
       background-color: transparent !important;
@@ -41,7 +41,7 @@
   </style>
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  <script nonce="<?= $nonce ?>" defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+  <script  defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -198,13 +198,12 @@
           </div>
           <ul class="navbar-nav justify-content-end">
             <li class="nav-item d-flex align-items-center">
-              <a class="btn btn-primary btn-sm mb-0 me-3" href="#">Online Builder</a>
+              <button class="btn btn-danger btn-sm mb-0 me-3" id="btn-reinitialiser" onclick="reinitialiserDonneesTeste()">
+                <i class="fa fa-refresh me-1"></i>Réinitialiser
+              </button>
             </li>
             <li class="nav-item d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-dark font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">Sign In</span>
-              </a>
+              <a class="btn btn-primary btn-sm mb-0 me-3" href="#">Online Builder</a>
             </li>
             <li class="nav-item d-xl-none ps-3 pe-0 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">

@@ -19,3 +19,13 @@ async function createBesoin(data) {
         throw error;
     }
 }
+
+async function getAllBesoins() {
+    const besoins = await fetch(BASE_URL+'/api/getAll/besoins');
+    if (!besoins.ok) {
+        throw new Error("Error lors de getAllArticles");
+    }
+
+    const data = await besoins.json();
+    return data;
+}

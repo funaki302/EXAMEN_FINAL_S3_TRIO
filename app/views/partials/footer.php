@@ -3,7 +3,7 @@
         <div class="row align-items-center justify-content-lg-between">
           <div class="col-lg-6 mb-lg-0 mb-4">
             <div class="copyright text-center text-sm text-muted text-lg-start">
-              © <script nonce="<?= $nonce ?>">document.write(new Date().getFullYear())</script>,
+              © <script >document.write(new Date().getFullYear())</script>,
               made with <i class="fa fa-heart"></i> by
               <strong>ETU004169-ETU004250-ETU004073</strong> 
             </div>
@@ -78,11 +78,11 @@
   <!--   End Fixed Plugin   -->
 
   <!--   Core JS Files   -->
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/core/popper.min.js"></script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/core/bootstrap.min.js"></script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script nonce="<?= $nonce ?>">
+  <script  src="<?= BASE_URL ?>/assets/js/core/popper.min.js"></script>
+  <script  src="<?= BASE_URL ?>/assets/js/core/bootstrap.min.js"></script>
+  <script  src="<?= BASE_URL ?>/assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script  src="<?= BASE_URL ?>/assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script >
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
       var options = { damping: '0.5' }
@@ -90,7 +90,52 @@
     }
   </script>
   <!-- Soft UI Dashboard JS -->
-  <script nonce="<?= $nonce ?>" src="<?= BASE_URL ?>/assets/js/soft-ui-dashboard.min.js"></script>
+  <script  src="<?= BASE_URL ?>/assets/js/soft-ui-dashboard.min.js"></script>
+
+  <!-- Script de réinitialisation global -->
+  <script >
+    async function reinitialiserDonneesTeste() {
+      const btn = document.getElementById('btn-reinitialiser');
+      
+      if (!confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données de test ?\n\nCette action supprimera définitivement toutes les données marquées comme "teste".')) {
+        return;
+      }
+      
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i>En cours...';
+      }
+      
+      try {
+        const baseUrl = typeof BASE_URL !== 'undefined' ? BASE_URL : (typeof window.BASE_URL !== 'undefined' ? window.BASE_URL : '');
+        const response = await fetch(baseUrl + '/api/modes/reinitialiser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ Réinitialisation effectuée avec succès !\n\nToutes les données de test ont été supprimées.');
+          // Recharger la page pour mettre à jour les données
+          window.location.reload();
+        } else {
+          alert('❌ Erreur lors de la réinitialisation:\n' + (result.message || 'Erreur inconnue'));
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('❌ Erreur réseau lors de la réinitialisation:\n' + error.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa fa-refresh me-1"></i>Réinitialiser';
+        }
+      }
+    }
+  </script>
 
   <!-- Page-specific scripts placeholder: include your page scripts BEFORE this footer partial -->
 </body>

@@ -21,6 +21,20 @@ function money(value) {
 let currentRows = [];
 let selectedRow = null;
 let modalInstance = null;
+let modesData = [];
+
+async function loadModes() {
+  const baseUrl = window.BASE_URL || '';
+  try {
+    const res = await fetch(baseUrl + '/api/getAll/modes', { headers: { Accept: 'application/json' } });
+    const json = await res.json();
+    if (json && json.success === true) {
+      modesData = json.data || [];
+    }
+  } catch (e) {
+    console.error('Erreur chargement modes:', e);
+  }
+}
 
 async function loadVilles() {
   const baseUrl = window.BASE_URL || '';
@@ -260,12 +274,14 @@ async function validateAchat() {
   const baseUrl = window.BASE_URL || '';
   const qEl = document.getElementById('input-quantite');
   const fEl = document.getElementById('input-frais');
+  const mEl = document.getElementById('input-mode');
   const resEl = document.getElementById('modal-achat-result');
 
   if (!selectedRow || !qEl || !fEl || !resEl) return;
 
   const quantite = Number(qEl.value);
   const frais = Number(fEl.value);
+  const idMode = mEl ? Number(mEl.value) : 2;
 
   resEl.textContent = 'Validation...';
 
@@ -278,6 +294,7 @@ async function validateAchat() {
         id_article: selectedRow.id_article,
         quantite_achetee: quantite,
         taux_frais_pourcent: frais,
+        id_mode: idMode,
       }),
     });
 

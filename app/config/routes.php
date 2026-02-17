@@ -10,6 +10,7 @@ use app\controllers\DonsRecusController;
 use app\controllers\DistributionsController;
 use app\controllers\DispatchController;
 use app\controllers\AchatsController;
+use app\controllers\ModesController;
 
 /** 
  * @var Router $router 
@@ -27,6 +28,7 @@ $router->group('', function(Router $router) use ($app) {
 	$distributionsController = new DistributionsController();
 	$dispatchController = new DispatchController();
 	$achatsController = new AchatsController();
+	$modesController = new ModesController();
 
 	// Dashboard
 	$router->get('/', function() use ($app) {
@@ -112,13 +114,21 @@ $router->group('', function(Router $router) use ($app) {
 	// API Villes
 	$router->get('/api/getAll/villes', [$villesController, 'getAll']);
 	$router->get('/villes/objectifs-dashboard', [$villesController, 'objectifsDashboard']);
+	$router->post('/api/create/villes', [$villesController, 'create']);
+
 
 	// API Articles
 	$router->get('/api/getAll/articles', [$articlesController, 'getAll']);
+	$router->post('/api/create/articles', [$articlesController, 'create']);
+
 
 	// API Besoins
 	$router->post('/api/create/besoins', [$besoinsVillesController, 'create']);
-
+	$router->get('/api/getAll/besoins', function() use ($app) {
+		$besoinsVillesController = new BesoinsVillesController();
+		$dons = $besoinsVillesController->getAll();
+		$app->json($dons);
+	});
 
 	// API Dons
 	$router->get('/api/getAll/dons-recus', function() use ($app) {
@@ -151,5 +161,10 @@ $router->group('', function(Router $router) use ($app) {
 	$router->get('/achats/besoins-restants', [$achatsController, 'besoinsRestants']);
 	$router->post('/achats/simulate', [$achatsController, 'simulate']);
 	$router->post('/achats/validate', [$achatsController, 'validate']);
+
+	// Modes & Réinitialisation
+	$router->get('/api/getAll/modes', [$modesController, 'getAll']);
+	$router->get('/api/modes/stats', [$modesController, 'getStats']);
+	$router->post('/api/modes/reinitialiser', [$modesController, 'reinitialiser']);
 
 }, [ SecurityHeadersMiddleware::class ]);
