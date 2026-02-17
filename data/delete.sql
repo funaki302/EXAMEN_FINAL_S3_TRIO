@@ -1,5 +1,5 @@
-delete from bngrc_distributions;
-delete from bngrc_dons_recus;
-delete from bngrc_achats;
-delete from bngrc_besoins_villes;
-delete from bngrc_transactions_argent;
+delete from BNGRC_distributions;
+delete from BNGRC_dons_recus;
+delete from BNGRC_achats;
+delete from BNGRC_besoins_villes;
+delete from BNGRC_transactions_argent;
