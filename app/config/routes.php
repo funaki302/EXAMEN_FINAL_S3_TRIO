@@ -138,7 +138,11 @@ $router->group('', function(Router $router) use ($app) {
 
 	// Dispatch
 	$router->post('/dispatch/run', [$dispatchController, 'run']);
+	$router->post('/dispatch/run-smallest', [$dispatchController, 'runSmallestNeeds']);
+	$router->post('/dispatch/run-proportionnel', [$dispatchController, 'runProportionnel']);
 	$router->post('/dispatch/validate', [$dispatchController, 'validate']);
+	$router->post('/dispatch/validate-smallest', [$dispatchController, 'validateSmallestNeeds']);
+	$router->post('/dispatch/validate-proportionnel', [$dispatchController, 'validateProportionnel']);
 	$router->get('/dispatch/summary', [$dispatchController, 'summary']);
 	$router->get('/dispatch/dons-restants', [$dispatchController, 'donsRestants']);
 

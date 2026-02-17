@@ -8,6 +8,195 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+async function runDispatchProportionnel() {
+  const baseUrl = window.BASE_URL || '';
+  const statusEl = document.getElementById('dispatch-status');
+  const btn = document.getElementById('btn-dispatch-run-proportionnel');
+
+  if (!statusEl) return;
+
+  if (btn) btn.disabled = true;
+  statusEl.className = 'text-sm text-secondary';
+  statusEl.textContent = 'Simulation (proportion) en cours...';
+
+  try {
+    const res = await fetch(baseUrl + '/dispatch/run-proportionnel', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+    });
+    const json = await res.json();
+
+    if (!json || json.success !== true) {
+      const msg = json && json.message ? json.message : 'Erreur lors de la simulation.';
+      statusEl.className = 'text-sm text-danger';
+      statusEl.textContent = msg;
+      return;
+    }
+
+    const info = json.data || {};
+    statusEl.className = 'text-sm text-success';
+    statusEl.textContent = `Dispatch (proportion) terminé: ${info.distributions_creees || 0} distributions créées, quantité attribuée: ${formatNumber(info.quantite_attribuee_totale || 0)}.`;
+
+    const summaryEl = document.getElementById('dispatch-summary');
+    if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
+      renderSummaryTable(summaryEl, info.summary_rows);
+      renderBesoinsStats(info.summary_rows);
+    }
+  } catch (e) {
+    statusEl.className = 'text-sm text-danger';
+    statusEl.textContent = 'Erreur réseau lors de la simulation.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function validateDispatchProportionnel() {
+  const baseUrl = window.BASE_URL || '';
+  const statusEl = document.getElementById('dispatch-status');
+  const btn = document.getElementById('btn-dispatch-validate-proportionnel');
+
+  if (!statusEl) return;
+
+  if (btn) btn.disabled = true;
+  statusEl.className = 'text-sm text-secondary';
+  statusEl.textContent = 'Validation (proportion) en cours...';
+
+  try {
+    const res = await fetch(baseUrl + '/dispatch/validate-proportionnel', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+    });
+    const json = await res.json();
+
+    if (!json || json.success !== true) {
+      const msg = json && json.message ? json.message : 'Erreur lors de la validation.';
+      statusEl.className = 'text-sm text-danger';
+      statusEl.textContent = msg;
+      return;
+    }
+
+    const info = json.data || {};
+    statusEl.className = 'text-sm text-success';
+    statusEl.textContent = `Dispatch (proportion) validé: ${info.distributions_creees || 0} distributions créées, quantité attribuée: ${formatNumber(info.quantite_attribuee_totale || 0)}.`;
+
+    await loadDispatchSummary();
+  } catch (e) {
+    statusEl.className = 'text-sm text-danger';
+    statusEl.textContent = 'Erreur réseau lors de la validation.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function renderBesoinsStats(rows) {
+  const elTotal = document.getElementById('dispatch-besoins-total');
+  const elSatisfaits = document.getElementById('dispatch-besoins-satisfaits');
+  const elNonSatisfaits = document.getElementById('dispatch-besoins-non-satisfaits');
+  const elResteTotal = document.getElementById('dispatch-besoins-reste-total');
+  if (!elTotal || !elSatisfaits || !elNonSatisfaits || !elResteTotal) return;
+
+  const list = Array.isArray(rows) ? rows : [];
+  const total = list.length;
+  let satisfaits = 0;
+  let nonSatisfaits = 0;
+  let resteTotal = 0;
+
+  list.forEach((r) => {
+    const reste = Number(r.reste_a_combler || 0) || 0;
+    if (reste <= 0) {
+      satisfaits += 1;
+    } else {
+      nonSatisfaits += 1;
+    }
+    resteTotal += reste;
+  });
+
+  elTotal.textContent = String(total);
+  elSatisfaits.textContent = String(satisfaits);
+  elNonSatisfaits.textContent = String(nonSatisfaits);
+  elResteTotal.textContent = formatNumber(resteTotal);
+}
+
+async function runDispatchSmallestNeeds() {
+  const baseUrl = window.BASE_URL || '';
+  const statusEl = document.getElementById('dispatch-status');
+  const btn = document.getElementById('btn-dispatch-run-smallest');
+
+  if (!statusEl) return;
+
+  if (btn) btn.disabled = true;
+  statusEl.className = 'text-sm text-secondary';
+  statusEl.textContent = 'Simulation (petits besoins d\'abord) en cours...';
+
+  try {
+    const res = await fetch(baseUrl + '/dispatch/run-smallest', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+    });
+    const json = await res.json();
+
+    if (!json || json.success !== true) {
+      const msg = json && json.message ? json.message : 'Erreur lors de la simulation.';
+      statusEl.className = 'text-sm text-danger';
+      statusEl.textContent = msg;
+      return;
+    }
+
+    const info = json.data || {};
+    statusEl.className = 'text-sm text-success';
+    statusEl.textContent = `Dispatch (petits besoins d'abord) terminé: ${info.distributions_creees || 0} distributions créées, quantité attribuée: ${formatNumber(info.quantite_attribuee_totale || 0)}.`;
+
+    const summaryEl = document.getElementById('dispatch-summary');
+    if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
+      renderSummaryTable(summaryEl, info.summary_rows);
+      renderBesoinsStats(info.summary_rows);
+    }
+  } catch (e) {
+    statusEl.className = 'text-sm text-danger';
+    statusEl.textContent = 'Erreur réseau lors de la simulation.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function validateDispatchSmallestNeeds() {
+  const baseUrl = window.BASE_URL || '';
+  const statusEl = document.getElementById('dispatch-status');
+  const btn = document.getElementById('btn-dispatch-validate-smallest');
+
+  if (!statusEl) return;
+
+  if (btn) btn.disabled = true;
+  statusEl.className = 'text-sm text-secondary';
+  statusEl.textContent = 'Validation (petits besoins d\'abord) en cours...';
+
+  try {
+    const res = await fetch(baseUrl + '/dispatch/validate-smallest', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+    });
+    const json = await res.json();
+
+    if (!json || json.success !== true) {
+      const msg = json && json.message ? json.message : 'Erreur lors de la validation.';
+      statusEl.className = 'text-sm text-danger';
+      statusEl.textContent = msg;
+      return;
+    }
+
+    const info = json.data || {};
+    statusEl.className = 'text-sm text-success';
+    statusEl.textContent = `Dispatch (petits besoins d'abord) validé: ${info.distributions_creees || 0} distributions créées, quantité attribuée: ${formatNumber(info.quantite_attribuee_totale || 0)}.`;
+
+    await loadDispatchSummary();
+  } catch (e) {
+    statusEl.className = 'text-sm text-danger';
+    statusEl.textContent = 'Erreur réseau lors de la validation.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
 function money(value) {
   return formatNumber(value) + ' Ar';
 }
@@ -264,6 +453,7 @@ async function loadDispatchSummary() {
     statusEl.textContent = `Résumé chargé (${json.count || 0} lignes).`;
 
     renderSummaryTable(summaryEl, json.data);
+    renderBesoinsStats(json.data);
   } catch (e) {
     statusEl.className = 'text-sm text-danger';
     statusEl.textContent = 'Erreur réseau lors du chargement.';
@@ -302,6 +492,7 @@ async function runDispatch() {
     const summaryEl = document.getElementById('dispatch-summary');
     if (summaryEl && info.summary_rows && Array.isArray(info.summary_rows)) {
       renderSummaryTable(summaryEl, info.summary_rows);
+      renderBesoinsStats(info.summary_rows);
     }
   } catch (e) {
     statusEl.className = 'text-sm text-danger';
@@ -330,10 +521,38 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  const btnSmallest = document.getElementById('btn-dispatch-run-smallest');
+  if (btnSmallest) {
+    btnSmallest.addEventListener('click', function () {
+      runDispatchSmallestNeeds();
+    });
+  }
+
   const btnValidate = document.getElementById('btn-dispatch-validate');
   if (btnValidate) {
     btnValidate.addEventListener('click', function () {
       validateDispatch();
+    });
+  }
+
+  const btnValidateSmallest = document.getElementById('btn-dispatch-validate-smallest');
+  if (btnValidateSmallest) {
+    btnValidateSmallest.addEventListener('click', function () {
+      validateDispatchSmallestNeeds();
+    });
+  }
+
+  const btnRunProp = document.getElementById('btn-dispatch-run-proportionnel');
+  if (btnRunProp) {
+    btnRunProp.addEventListener('click', function () {
+      runDispatchProportionnel();
+    });
+  }
+
+  const btnValidateProp = document.getElementById('btn-dispatch-validate-proportionnel');
+  if (btnValidateProp) {
+    btnValidateProp.addEventListener('click', function () {
+      validateDispatchProportionnel();
     });
   }
 });

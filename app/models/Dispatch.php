@@ -12,7 +12,152 @@ class Dispatch {
         $this->distributionsModel = new Distributions();
     }
 
-    public function runDispatch($dateAttribution, $persist = true, $extraDons = []) {
+    private function allocateProportionnelle($dateAttribution, $persist = true) {
+        $dons = $this->getDonsAvecReste();
+        $besoins = $this->getBesoinsAvecReste();
+
+        $donsParArticle = [];
+        foreach ($dons as $d) {
+            $idArticle = (int) $d['id_article'];
+            if (!isset($donsParArticle[$idArticle])) {
+                $donsParArticle[$idArticle] = [];
+            }
+            $donsParArticle[$idArticle][] = $d;
+        }
+
+        $besoinsParArticle = [];
+        foreach ($besoins as $b) {
+            $idArticle = (int) $b['id_article'];
+            if (!isset($besoinsParArticle[$idArticle])) {
+                $besoinsParArticle[$idArticle] = [];
+            }
+            $besoinsParArticle[$idArticle][] = $b;
+        }
+
+        foreach ($besoinsParArticle as &$needs) {
+            usort($needs, function($a, $b) {
+                $da = strtotime((string) ($a['date_saisie'] ?? '1970-01-01 00:00:00'));
+                $db = strtotime((string) ($b['date_saisie'] ?? '1970-01-01 00:00:00'));
+                if ($da === $db) {
+                    return ((int) ($a['id_besoin'] ?? 0)) <=> ((int) ($b['id_besoin'] ?? 0));
+                }
+                return $da <=> $db;
+            });
+        }
+        unset($needs);
+
+        $created = 0;
+        $totalAttribue = 0.0;
+        $attribParVilleArticle = [];
+
+        foreach ($besoinsParArticle as $idArticle => $needs) {
+            $idArticle = (int) $idArticle;
+            if (!isset($donsParArticle[$idArticle]) || count($donsParArticle[$idArticle]) === 0) {
+                continue;
+            }
+
+            $totalDonReste = 0.0;
+            foreach ($donsParArticle[$idArticle] as $d) {
+                $totalDonReste += (float) ($d['reste_don'] ?? 0);
+            }
+
+            if ($totalDonReste <= 0) {
+                continue;
+            }
+
+            $donsQueue = $donsParArticle[$idArticle];
+            $donIndex = 0;
+            $resteDonCourant = (float) ($donsQueue[0]['reste_don'] ?? 0);
+
+            foreach ($needs as $need) {
+                $resteBesoin = (float) ($need['reste_besoin'] ?? 0);
+                if ($resteBesoin <= 0) {
+                    continue;
+                }
+
+                $quota = (int) floor($resteBesoin / $totalDonReste);
+                if ($quota <= 0) {
+                    continue;
+                }
+
+                $aDistribuer = min($resteBesoin, (float) $quota);
+                while ($aDistribuer > 0 && $donIndex < count($donsQueue)) {
+                    if ($resteDonCourant <= 0) {
+                        $donIndex++;
+                        if ($donIndex >= count($donsQueue)) {
+                            break;
+                        }
+                        $resteDonCourant = (float) ($donsQueue[$donIndex]['reste_don'] ?? 0);
+                        continue;
+                    }
+
+                    $attrib = min($aDistribuer, $resteDonCourant);
+                    if ($attrib <= 0) {
+                        break;
+                    }
+
+                    $idDon = (int) ($donsQueue[$donIndex]['id_don'] ?? 0);
+                    $idVille = (int) ($need['id_ville'] ?? 0);
+
+                    if ($persist === true) {
+                        $this->distributionsModel->create($idDon, $idVille, $attrib, $dateAttribution);
+                    }
+
+                    $key = $idVille . ':' . $idArticle;
+                    if (!isset($attribParVilleArticle[$key])) {
+                        $attribParVilleArticle[$key] = 0.0;
+                    }
+                    $attribParVilleArticle[$key] += $attrib;
+
+                    $resteDonCourant -= $attrib;
+                    $aDistribuer -= $attrib;
+                    $created++;
+                    $totalAttribue += $attrib;
+                }
+            }
+        }
+
+        return [
+            'dispatch' => [
+                'distributions_creees' => $created,
+                'quantite_attribuee_totale' => $totalAttribue,
+                'persisted' => (bool) $persist,
+                'date_execution' => $dateAttribution,
+            ],
+            'attrib_map' => $attribParVilleArticle,
+        ];
+    }
+
+    public function runDispatchProportionnel($dateAttribution, $persist = true) {
+        $res = $this->allocateProportionnelle($dateAttribution, $persist);
+        return $res['dispatch'];
+    }
+
+    public function getSimulatedSummaryRowsProportionnel($dateAttribution) {
+        $res = $this->allocateProportionnelle($dateAttribution, false);
+        $attribParVilleArticle = $res['attrib_map'] ?? [];
+
+        $base = $this->getSummaryRows();
+        $out = [];
+        foreach ($base as $r) {
+            $key = ((int) $r['id_ville']) . ':' . ((int) $r['id_article']);
+            $extra = (float) ($attribParVilleArticle[$key] ?? 0.0);
+            $attribTotal = (float) ($r['attribue_total'] ?? 0) + $extra;
+            $reste = max(0.0, (float) ($r['reste_a_combler'] ?? 0) - $extra);
+
+            $r['attribue_total'] = $attribTotal;
+            $r['reste_a_combler'] = $reste;
+            $out[] = $r;
+        }
+
+        return [
+            'dispatch' => $res['dispatch'] ?? [],
+            'summary_rows' => $out,
+            'count' => count($out),
+        ];
+    }
+
+    public function runDispatch($dateAttribution, $persist = true, $extraDons = [], $smallestNeedsFirst = false) {
         $dons = $this->getDonsAvecReste();
 
         if (is_array($extraDons) && count($extraDons) > 0) {
@@ -38,6 +183,25 @@ class Dispatch {
             $besoinsParArticle[$idArticle][] = &$b;
         }
         unset($b);
+
+        if ($smallestNeedsFirst === true) {
+            foreach ($besoinsParArticle as &$needs) {
+                usort($needs, function($a, $b) {
+                    $ra = (float) ($a['reste_besoin'] ?? 0);
+                    $rb = (float) ($b['reste_besoin'] ?? 0);
+                    if ($ra === $rb) {
+                        $da = strtotime((string) ($a['date_saisie'] ?? '1970-01-01 00:00:00'));
+                        $db = strtotime((string) ($b['date_saisie'] ?? '1970-01-01 00:00:00'));
+                        if ($da === $db) {
+                            return ((int) ($a['id_besoin'] ?? 0)) <=> ((int) ($b['id_besoin'] ?? 0));
+                        }
+                        return $da <=> $db;
+                    }
+                    return $ra <=> $rb;
+                });
+            }
+            unset($needs);
+        }
 
         $created = 0;
         $totalAttribue = 0.0;
@@ -90,7 +254,7 @@ class Dispatch {
         ];
     }
 
-    public function getSimulatedSummaryRows($dateAttribution, $extraDons = []) {
+    public function getSimulatedSummaryRows($dateAttribution, $extraDons = [], $smallestNeedsFirst = false) {
         $dons = $this->getDonsAvecReste();
 
         if (is_array($extraDons) && count($extraDons) > 0) {
@@ -117,6 +281,25 @@ class Dispatch {
             $besoinsParArticle[$idArticle][] = &$b;
         }
         unset($b);
+
+        if ($smallestNeedsFirst === true) {
+            foreach ($besoinsParArticle as &$needs) {
+                usort($needs, function($a, $b) {
+                    $ra = (float) ($a['reste_besoin'] ?? 0);
+                    $rb = (float) ($b['reste_besoin'] ?? 0);
+                    if ($ra === $rb) {
+                        $da = strtotime((string) ($a['date_saisie'] ?? '1970-01-01 00:00:00'));
+                        $db = strtotime((string) ($b['date_saisie'] ?? '1970-01-01 00:00:00'));
+                        if ($da === $db) {
+                            return ((int) ($a['id_besoin'] ?? 0)) <=> ((int) ($b['id_besoin'] ?? 0));
+                        }
+                        return $da <=> $db;
+                    }
+                    return $ra <=> $rb;
+                });
+            }
+            unset($needs);
+        }
 
         $created = 0;
         $totalAttribue = 0.0;
@@ -192,12 +375,14 @@ class Dispatch {
     }
 
     public function getSummaryRows() {
-        $sqlBesoins = "SELECT bv.id_ville, v.nom_ville, v.region, bv.id_article, a.nom_article, a.categorie, SUM(bv.quantite_demandee) AS besoin_total
+        $sqlBesoins = "SELECT bv.id_ville, v.nom_ville, v.region, bv.id_article, a.nom_article, a.categorie,
+                             SUM(bv.quantite_demandee) AS besoin_total,
+                             MIN(bv.date_saisie) AS date_premier_besoin
                       FROM BNGRC_besoins_villes bv
                       JOIN BNGRC_villes v ON bv.id_ville = v.id_ville
                       JOIN BNGRC_articles a ON bv.id_article = a.id_article
                       GROUP BY bv.id_ville, v.nom_ville, v.region, bv.id_article, a.nom_article, a.categorie
-                      ORDER BY v.nom_ville ASC, a.nom_article ASC";
+                      ORDER BY date_premier_besoin ASC, v.nom_ville ASC, a.nom_article ASC";
 
         $sqlAttrib = "SELECT d.id_ville, dr.id_article, SUM(d.quantite_attribuee) AS attribue_total
                       FROM BNGRC_distributions d
@@ -229,6 +414,7 @@ class Dispatch {
                 'besoin_total' => $besoin,
                 'attribue_total' => $attribue,
                 'reste_a_combler' => $reste,
+                'date_premier_besoin' => $b['date_premier_besoin'] ?? null,
             ];
         }
 
